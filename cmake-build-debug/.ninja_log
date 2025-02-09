@@ -1,0 +1,6 @@
+# ninja log v6
+2	196	7607749846373282	build.ninja	791a0cf1797bd6a3
+1	36	7607749624480490	CMakeFiles/2510_Final_Project.dir/hospital_management_system.c.obj	7341bc4dba8ff413
+37	86	7607749624835504	2510_Final_Project.exe	dff96f342510dc6e
+7	47	7607750130669685	CMakeFiles/2510_Final_Project.dir/hospital_management_system.c.obj	7341bc4dba8ff413
+47	97	7607750131069673	2510_Final_Project.exe	dff96f342510dc6e
