@@ -30,6 +30,7 @@ int main()
         printf("2. View all patient records\n");
         printf("3. Search for a patient\n");
         printf("4. Discharge a patient\n");
+        printf("5. Manage Doctor Schedule\n");
         if (!scand(&menu_choice))
             continue;
 
@@ -59,6 +60,13 @@ int main()
                 dischargePatient();
             }
             break;
+
+        case 5:
+            {
+                manageDoctorSchedule();
+            }
+            break;
+
         default:
             invalidInput("Invalid choice");
             break;
@@ -392,4 +400,28 @@ void dischargePatientByName(const char patient_name[CHAR_BUFFER])
         }
     }
     printf("No patient found with name: %s\n", patient_name);
+}
+
+void manageDoctorSchedule()
+{
+    int manageChoice;
+
+    while (1)
+    {
+        printf("1. View Current Doctor Schedule\n");
+        printf("2. Add to Doctor Schedule\n");
+        if (!scand(&manageChoice))
+            continue;
+
+        switch (manageChoice)
+        {
+            case 1:
+                printDoctorSchedule(doctorsSchedule);
+            break;
+
+            case 2:
+                printScheduleChoices();
+            break;
+        }
+    }
 }
