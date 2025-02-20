@@ -10,10 +10,14 @@
 #include "patient.h"
 
 #define CURSOR_UP "\x1b[A"
+#define DAYS_PER_WEEK 7
+#define SHIFTS_PER_DAY 3
 
 // Global array of patients
 Patient patients[MAX_PATIENTS];
 int patientCount = 0;
+
+char doctorsSchedule[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
 
 int main()
 {
@@ -215,14 +219,14 @@ void addPatient()
 void printPatient(Patient* p)
 {
     printf("%-10d\t %-10.10s\t %-3d\t %-10.10s\t %-10d\t\n",
-        p->patient_id, p->full_name, p->age, p->diagnosis, p->room_number);
+           p->patient_id, p->full_name, p->age, p->diagnosis, p->room_number);
 }
 
 // Function to print the header containing the details of each patient.
 void printPatientHeader()
 {
     printf("%-10s\t %-10s\t %-3s\t %-10s\t %-10s\t\n",
-            "ID", "Full Name", "Age", "Diagnosis", "Room Num");
+           "ID", "Full Name", "Age", "Diagnosis", "Room Num");
 }
 
 void viewAllPatientRecords()
@@ -283,7 +287,9 @@ void searchPatientByID(int patientID)
     if (p == NULL)
     {
         printf("Patient ID not found.\n");
+        return;
     }
+    printPatientHeader();
     printPatient(p);
 }
 
@@ -297,6 +303,7 @@ void searchPatientByName(const char patient_name[CHAR_BUFFER])
             return;
         }
     }
+    printPatientHeader();
     printf("Patient name not found.\n");
 }
 
