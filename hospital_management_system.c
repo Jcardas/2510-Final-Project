@@ -267,7 +267,8 @@ void addPatient()
             break;
     }
 
-    // Finally, store the patient's record in the patients array, and update the patient count.
+    // Finally, store the patient's record in the patients array
+    // and update the patient count.
     patients[patientCount++] = newPatient;
     println("\nThe following patient has been added:");
     printPatientHeader();
@@ -498,7 +499,8 @@ void initializeDoctorsSchedule()
     }
 }
 
-void printDoctorsSchedule(char values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER])
+void printDoctorsSchedule(char
+    values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER])
 {
     // column header
     printf(CLR_LINE);
@@ -583,10 +585,11 @@ void changeDoctorSchedule()
         println("This shift is currently empty.");
         print("Doctor to cover this shift: ");
     }
-    scans(newDoctor); // can be empty, which would mean no one covers that shift
-    // assign doctor (or lack thereof) to the shift
+    // newDoctor can be empty, which would mean no one covers that shift
+    scans(newDoctor);
+    // Assign doctor (or lack thereof) to the shift
     sprintf(doctorsSchedule[day][shift], "%s", newDoctor);
-    // print confirmation
+    // Print confirmation
     println("\nSchedule updated successfully.");
     printDoctorsSchedule(doctorsSchedule);
 }
