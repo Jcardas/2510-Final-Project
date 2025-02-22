@@ -92,7 +92,7 @@ bool mainMenu()
             manageDoctorSchedule();
             return true;
         default:
-            invalidInput("Invalid choice");
+            invalidInput("Invalid choice.");
         }
     }
 }
