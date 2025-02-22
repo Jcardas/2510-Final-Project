@@ -62,7 +62,7 @@ void print(const char* format, ...);
 /**
  * Convenient wrapper for printf.
  *
- * Clears the current line and prints with an ending \n.
+ * Clears the current line and prints with an ending <pre>\n</pre>.
  */
 void println(const char* format, ...);
 

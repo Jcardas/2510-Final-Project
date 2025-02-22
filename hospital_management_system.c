@@ -170,8 +170,13 @@ void print(const char* format, ...)
 
 void println(const char* format, ...)
 {
-    print(format);
-    printf("\n");
+    va_list args;
+    va_start(args, format);
+    printf(CLR_LINE);
+    char fmtWithNewLine[CHAR_BUFFER + 1];
+    sprintf(fmtWithNewLine, "%s\n", format);
+    vprintf(fmtWithNewLine, args);
+    va_end(args);
 }
 
 void invalidInput(char message[])
