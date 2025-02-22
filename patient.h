@@ -18,6 +18,13 @@ typedef struct
     int roomNumber;
 } Patient;
 
+typedef struct
+{
+    int matchedIndices[MAX_PATIENTS];
+    int matches;
+} searchResults;
+
+
 /**
  * @brief Gets a patient by id.
  * @param patientId patient's id
@@ -81,7 +88,7 @@ void searchPatient();
  * If a patient with the given ID exists, their details are displayed.
  * Otherwise, a message is printed indicating that no such patient was found.
  */
-void searchPatientById();
+Patient* searchPatientById();
 
 /**
  * @brief Searches for a patient by their name.
@@ -91,7 +98,7 @@ void searchPatientById();
  * If multiple patients have the same name, all matching records are shown.
  * If no match is found, an appropriate message is displayed.
  */
-void searchPatientByName();
+searchResults* searchPatientByName();
 
 
 /**

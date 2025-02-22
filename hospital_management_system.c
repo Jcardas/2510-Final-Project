@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 #include "hospital.h"
 #include "patient.h"
@@ -293,12 +294,10 @@ void viewAllPatientRecords()
 void searchPatient()
 {
     printf(CLR_SCREEN);
-    println("Searching patient...\n");
-
-    println("Search by:");
+    println("Search patient by:");
     println("0. Nevermind; exit.");
     println("1. ID");
-    println("2. Full Name");
+    println("2. Full name");
 
     int searchChoice;
     while (1)
@@ -323,7 +322,7 @@ void searchPatient()
     }
 }
 
-void searchPatientById()
+Patient* searchPatientById()
 {
     int patientId;
     while (1)
@@ -337,14 +336,15 @@ void searchPatientById()
     if (p == NULL)
     {
         println("Patient ID not found.");
-        return;
+        return NULL;
     }
     println("Search result:");
     printPatientHeader();
     printPatient(p);
+    return p;
 }
 
-void searchPatientByName()
+searchResults* searchPatientByName()
 {
     char name[CHAR_BUFFER];
     while (1)
@@ -354,25 +354,33 @@ void searchPatientByName()
             break;
     }
 
+    searchResults* results = malloc(sizeof(searchResults));
     for (int i = 0; i < patientCount; ++i)
     {
         if (strcmp(patients[i].name, name) == 0)
-        {
-            println("Search result:");
-            printPatientHeader();
-            printPatient(&patients[i]);
-            return;
-        }
+            results->matchedIndices[results->matches++] = i;
     }
-    println("Patient name not found.");
+
+    if (results->matches)
+    {
+        println("%d match%s:",
+                results->matches,
+                results->matches > 1 ? "es" : "");
+        printPatientHeader();
+        for (int i = 0; i < results->matches; ++i)
+            printPatient(&patients[results->matchedIndices[i]]);
+    }
+    else
+    {
+        println("Patient name not found.");
+    }
+    return results;
 }
 
 void dischargePatient()
 {
     printf(CLR_SCREEN);
-    println("Discharging patient...\n");
-
-    println("Discharge by:");
+    println("Discharge patient by:");
     println("0. Nevermind; exit.");
     println("1. ID");
     println("2. Full Name");
@@ -426,45 +434,35 @@ void dischargePatientById()
             return; // Exit after discharging
         }
     }
-    println("No patient found with ID %d", patientId);
+    println("Patient ID not found.");
 }
 
 void dischargePatientByName()
 {
-    char name[CHAR_BUFFER];
-    while (1)
+    searchResults* results = searchPatientByName();
+
+    if (results->matches == 0)
+        return;
+    if (results->matches > 1)
     {
-        print("Full name: ");
-        if (scansNonEmpty(name))
-            break;
+        println("Which one to discharge?");
+        dischargePatientById();
+        return;
     }
 
-    for (int i = 0; i < patientCount; ++i)
+    // Shift remaining elements to the left
+    for (int i = results->matchedIndices[0]; i < patientCount - 1; i++)
     {
-        if (strcmp(patients[i].name, name) == 0)
-        {
-            println("\nThe following patient has been discharged:");
-            printPatientHeader();
-            printPatient(&patients[i]);
-
-            // Shift remaining elements to the left
-            for (int j = i; j < patientCount - 1; j++)
-            {
-                patients[j] = patients[j + 1];
-            }
-
-            patientCount--; // Reduce total patient count
-            return; // Exit after discharging
-        }
+        patients[i] = patients[i + 1];
     }
-    println("No patient found with name: %s", name);
+    --patientCount; // Reduce total patient count
+    println("Patient discharged successfully.");
 }
 
 void manageDoctorSchedule()
 {
     printf(CLR_SCREEN);
-    println("Managing doctors schedule...");
-
+    println("Manage doctors schedule:");
     println("0. Nevermind; exit.");
     println("1. View schedule");
     println("2. Change chedule");
@@ -490,7 +488,6 @@ void manageDoctorSchedule()
         }
     }
 }
-
 
 void initializeDoctorsSchedule()
 {
