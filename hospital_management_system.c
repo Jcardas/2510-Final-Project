@@ -5,97 +5,104 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "hospital.h"
 #include "patient.h"
 
-#define CURSOR_UP "\x1b[A"
+// ANSI escape codes to manipulate the terminal
+#define CURSOR_UP "\x1b[A\r"
+#define CLR_LINE "\33[2K\r"
+#define CLR_SCREEN "\033c"
 
 // Global array of patients
 Patient patients[MAX_PATIENTS];
 int patientCount = 0;
 
+// Doctors schedule as a 2D array
 char doctorsSchedule[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
-
 char daysOfWeek[][CHAR_BUFFER] = {
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
-    "Sun"
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
 };
-
 char shiftsOfDay[][CHAR_BUFFER] = {
     "Morning",
     "Afternoon",
     "Evening"
 };
 
+
 int main()
 {
+    while (1)
+    {
+        printf(CLR_SCREEN);
+        if (!mainMenu())
+            return 0;
+        print("\nPress enter to return to menu...");
+        getchar(); // Stops from progressing
+    }
+}
+
+bool mainMenu()
+{
+    println("Welcome to the hospital management system.");
+    println("0. Exit");
+    println("1. Add new patient");
+    println("2. View all patient records");
+    println("3. Search for a patient");
+    println("4. Discharge a patient");
+    println("5. Manage doctors schedule");
+
     int menuChoice;
     while (1)
     {
-        printf("0. Exit\n");
-        printf("1. Add new patient\n");
-        printf("2. View all patient records\n");
-        printf("3. Search for a patient\n");
-        printf("4. Discharge a patient\n");
-        printf("5. Manage doctors schedule\n");
+        print("Choice: ");
         if (!scand(&menuChoice))
             continue;
 
         switch (menuChoice)
         {
         case 0:
-            printf("Exiting...\n");
-            return 0;
+            println("Exiting...");
+            return false;
         case 1:
             addPatient();
-            break;
+            return true;
         case 2:
             if (checkForPatients())
-            {
                 viewAllPatientRecords();
-            }
-            break;
+            return true;
         case 3:
             if (checkForPatients())
-            {
                 searchPatient();
-            }
-            break;
+            return true;
         case 4:
             if (checkForPatients())
-            {
                 dischargePatient();
-            }
-            break;
-
+            return true;
         case 5:
-            {
-                manageDoctorSchedule();
-            }
-            break;
-
+            manageDoctorSchedule();
+            return true;
         default:
             invalidInput("Invalid choice");
-            break;
         }
-        printf("Press enter to return to menu...\n");
-        getchar(); // Stops from progressing
     }
 }
-
 
 void invalidInput(char message[])
 {
     if (message == NULL)
         message = "Invalid input.";
+    printf(CLR_LINE);
+    printf(message);
     printf(CURSOR_UP);
-    printf("%s\n", message);
+    printf(CLR_LINE);
 }
 
 bool scand(int* num)
@@ -108,64 +115,81 @@ bool scand(int* num)
     int c = getchar();
     bool valid = itemsScanned > 0 && (c == '\n' || c == EOF);
 
-    // In that case,
-    if (!valid)
-    {
-        // flush the input stream
-        while ((c = getchar()) != '\n' && c != EOF);
-        invalidInput("Input must be a number.");
-    }
+    if (valid)
+        return true;
 
-    return valid;
+    invalidInput("Input must be a number.");
+    // Flush the input stream
+    while ((c = getchar()) != '\n' && c != EOF);
+    return false;
 }
+
 
 bool scandPositive(int* num)
 {
-    bool valid = scand(num);
-    if (!valid)
+    if (!scand(num))
         return false;
-    if (*num < 0)
-    {
-        invalidInput("Number must be non-negative.");
-        return false;
-    }
-    return true;
+    if (*num >= 0)
+        return true;
+    invalidInput("Number must be non-negative.");
+    return false;
 }
 
 
-void scans(char* str)
+bool scans(char* str)
 {
     fgets(str, CHAR_BUFFER, stdin);
 
+    // Find the pointer to the newline character
     char* EOL = strchr(str, '\n');
-    if (!EOL) // no EOL means buffer overflow
-
-    {
-        // clear the input stream
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
-    }
-    else
+    if (EOL)
     {
         *EOL = '\0'; // Replace '\n' with '\0'
+        return true;
     }
-}
 
+    // If not found, it means user entered more characters than allowed
+    // Clear the input stream
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+    // Print error message
+    char errorMessage[CHAR_BUFFER];
+    sprintf(errorMessage, "Maximum %d characters allowed.", CHAR_BUFFER);
+    invalidInput(errorMessage);
+    return false;
+}
 
 bool scansNonEmpty(char* str)
 {
-    scans(str);
-    bool valid = strlen(str) > 0;
-    if (!valid)
-        printf(CURSOR_UP);
-    return valid;
+    if (!scans(str))
+        return false;
+    if (strlen(str) > 0)
+        return true;
+    printf(CURSOR_UP);
+    return false;
 }
+
+void print(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    printf(CLR_LINE);
+    vprintf(format, args);
+    va_end(args);
+}
+
+void println(const char* format, ...)
+{
+    print(format);
+    printf("\n");
+}
+
 
 bool checkForPatients()
 {
     if (patientCount <= 0)
     {
-        printf("ERROR: No patients in system.\n");
+        println("ERROR: No patients in system.");
         return false;
     }
     return true;
@@ -187,119 +211,111 @@ void addPatient()
 {
     if (patientCount >= MAX_PATIENTS)
     {
-        printf("ERROR: Too many patients in system.\n");
+        println("ERROR: Too many patients in system.");
         return;
     }
 
-    Patient newPatient; // Call the new Patient.
+    printf(CLR_SCREEN);
+    println("Adding new patient...\n");
 
-    printf("Adding new patient...\n\n");
-
+    Patient newPatient;
     while (1)
     {
-        printf("Patient ID: ");
+        print("Patient ID: ");
         if (scandPositive(&newPatient.patientId))
             break;
     }
 
     if (getPatientById(newPatient.patientId) != NULL)
     {
-        printf("ERROR: Patient ID already exists.\n");
+        println("ERROR: Patient already added.");
         return;
     }
 
-
     while (1)
     {
-        printf("Full name: ");
+        print("Full name: ");
         if (scansNonEmpty(newPatient.name))
             break;
     }
 
     while (1)
     {
-        printf("Age: ");
+        print("Age: ");
         if (scandPositive(&newPatient.age))
             break;
     }
 
     while (1)
     {
-        printf("Diagnosis: ");
+        print("Diagnosis: ");
         if (scansNonEmpty(newPatient.diagnosis))
             break;
     }
 
     while (1)
     {
-        printf("Room number: ");
+        print("Room number: ");
         if (scandPositive(&newPatient.roomNumber))
             break;
     }
 
     // Finally, store the patient's record in the patients array, and update the patient count.
     patients[patientCount++] = newPatient;
-    printf("Patient has been added successfully.\n");
+    println("\nThe following patient has been added:");
+    printPatientHeader();
+    printPatient(&newPatient);
 }
 
 // Function to print all the details of a patient at the passed index.
 void printPatient(Patient* p)
 {
-    printf("%-10d\t %-10.10s\t %-3d\t %-10.10s\t %-10d\t\n",
-           p->patientId, p->name, p->age, p->diagnosis, p->roomNumber);
+    println("%-5d\t %-10.10s\t %-3d\t %-20.20s\t %-5d",
+            p->patientId, p->name, p->age, p->diagnosis, p->roomNumber);
 }
 
 // Function to print the header containing the details of each patient.
 void printPatientHeader()
 {
-    printf("%-10s\t %-10s\t %-3s\t %-10s\t %-10s\t\n",
-           "ID", "Full Name", "Age", "Diagnosis", "Room Num");
+    println("%-5s\t %-10s\t %-3s\t %-20s\t %-5s",
+            "ID", "Full Name", "Age", "Diagnosis", "Room Num");
 }
 
 void viewAllPatientRecords()
 {
+    printf(CLR_SCREEN);
+    println("All patient records:\n");
     printPatientHeader();
     for (int i = 0; i < patientCount; ++i)
-    {
         printPatient(&patients[i]);
-    }
 }
 
 void searchPatient()
 {
+    printf(CLR_SCREEN);
+    println("Searching patient...\n");
+
+    println("Search by:");
+    println("0. Nevermind; exit.");
+    println("1. ID");
+    println("2. Full Name");
+
     int searchChoice;
     while (1)
     {
-        printf("Search by:\n");
-        printf("0. Nevermind; exit.\n");
-        printf("1. ID\n");
-        printf("2. Full Name\n");
+        print("Choice: ");
         if (!scand(&searchChoice))
             continue;
 
-        int searchID;
-        char searchFullName[CHAR_BUFFER];
         switch (searchChoice)
         {
         case 0:
             return;
         case 1:
-            while (1)
-            {
-                printf("Search ID: ");
-                if (scandPositive(&searchID))
-                    break;
-            }
-            searchPatientByID(searchID);
+            searchPatientById();
             return;
         case 2:
-            while (1)
-            {
-                printf("Search full name: ");
-                if (scansNonEmpty(searchFullName))
-                    break;
-            }
-            searchPatientByName(searchFullName);
+            searchPatientByName();
             return;
         default:
             invalidInput("Invalid choice.");
@@ -307,68 +323,76 @@ void searchPatient()
     }
 }
 
-void searchPatientByID(int patientID)
+void searchPatientById()
 {
-    Patient* p = getPatientById(patientID);
+    int patientId;
+    while (1)
+    {
+        print("ID: ");
+        if (scandPositive(&patientId))
+            break;
+    }
+
+    Patient* p = getPatientById(patientId);
     if (p == NULL)
     {
-        printf("Patient ID not found.\n");
+        println("Patient ID not found.");
         return;
     }
+    println("Search result:");
     printPatientHeader();
     printPatient(p);
 }
 
-void searchPatientByName(const char name[CHAR_BUFFER])
+void searchPatientByName()
 {
+    char name[CHAR_BUFFER];
+    while (1)
+    {
+        print("Full name: ");
+        if (scansNonEmpty(name))
+            break;
+    }
+
     for (int i = 0; i < patientCount; ++i)
     {
         if (strcmp(patients[i].name, name) == 0)
         {
+            println("Search result:");
+            printPatientHeader();
             printPatient(&patients[i]);
             return;
         }
     }
-    printPatientHeader();
-    printf("Patient name not found.\n");
+    println("Patient name not found.");
 }
 
 void dischargePatient()
 {
-    int dischargeChoice;
+    printf(CLR_SCREEN);
+    println("Discharging patient...\n");
 
+    println("Discharge by:");
+    println("0. Nevermind; exit.");
+    println("1. ID");
+    println("2. Full Name");
+
+    int dischargeChoice;
     while (1)
     {
-        printf("Discharge by:\n");
-        printf("0. Nevermind; exit.\n");
-        printf("1. ID\n");
-        printf("2. Full Name\n");
+        print("Choice: ");
         if (!scand(&dischargeChoice))
             continue;
 
-        int dischargeID;
-        char dischargeFullName[CHAR_BUFFER];
         switch (dischargeChoice)
         {
         case 0:
             return;
         case 1:
-            while (1)
-            {
-                printf("ID: ");
-                if (scandPositive(&dischargeID))
-                    break;
-            }
-            dischargePatientById(dischargeID);
+            dischargePatientById();
             return;
         case 2:
-            while (1)
-            {
-                printf("Full name: ");
-                if (scansNonEmpty(dischargeFullName))
-                    break;
-            }
-            dischargePatientByName(dischargeFullName);
+            dischargePatientByName();
             return;
         default:
             invalidInput("Invalid choice.");
@@ -376,35 +400,52 @@ void dischargePatient()
     }
 }
 
-void dischargePatientById(int patientID)
+void dischargePatientById()
 {
+    int patientId;
+    while (1)
+    {
+        print("ID: ");
+        if (scandPositive(&patientId))
+            break;
+    }
+
     for (int i = 0; i < patientCount; ++i)
     {
-        if (patients[i].patientId == patientID)
+        if (patients[i].patientId == patientId)
         {
-            printf("Discharging patient: %s (ID: %d)\n", patients[i].name, patients[i].patientId);
-
+            println("\nThe following patient has been discharged:");
+            printPatientHeader();
+            printPatient(&patients[i]);
             // Shift remaining elements to the left
             for (int j = i; j < patientCount - 1; j++)
             {
                 patients[j] = patients[j + 1];
             }
-
             patientCount--; // Reduce total patient count
-            printf("Patient discharged successfully.\n");
             return; // Exit after discharging
         }
     }
-    printf("No patient found with ID: %d\n", patientID);
+    println("No patient found with ID %d", patientId);
 }
 
-void dischargePatientByName(const char name[CHAR_BUFFER])
+void dischargePatientByName()
 {
+    char name[CHAR_BUFFER];
+    while (1)
+    {
+        print("Full name: ");
+        if (scansNonEmpty(name))
+            break;
+    }
+
     for (int i = 0; i < patientCount; ++i)
     {
         if (strcmp(patients[i].name, name) == 0)
         {
-            printf("Discharging patient: %s (ID: %d)\n", patients[i].name, patients[i].patientId);
+            println("\nThe following patient has been discharged:");
+            printPatientHeader();
+            printPatient(&patients[i]);
 
             // Shift remaining elements to the left
             for (int j = i; j < patientCount - 1; j++)
@@ -413,25 +454,27 @@ void dischargePatientByName(const char name[CHAR_BUFFER])
             }
 
             patientCount--; // Reduce total patient count
-            printf("Patient discharged successfully.\n");
             return; // Exit after discharging
         }
     }
-    printf("No patient found with name: %s\n", name);
+    println("No patient found with name: %s", name);
 }
 
 void manageDoctorSchedule()
 {
-    printf("Managing doctors schedule...\n\n");
+    printf(CLR_SCREEN);
+    println("Managing doctors schedule...");
+
+    println("0. Nevermind; exit.");
+    println("1. View schedule");
+    println("2. Change chedule");
+
     int manageChoice;
     while (1)
     {
-        printf("0. Nevermind; exit.\n");
-        printf("1. View schedule\n");
-        printf("2. Change chedule\n");
+        print("Choice: ");
         if (!scand(&manageChoice))
             continue;
-
         switch (manageChoice)
         {
         case 0:
@@ -448,6 +491,7 @@ void manageDoctorSchedule()
     }
 }
 
+
 void initializeDoctorsSchedule()
 {
     for (int i = 0; i < DAYS_PER_WEEK; i++)
@@ -461,19 +505,38 @@ void initializeDoctorsSchedule()
 
 void printDoctorsSchedule(char values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER])
 {
-    printf("\t  %s", shiftsOfDay[0]);
+    // column header
+    printf(CLR_LINE);
+    printf("\t  | %-20s", shiftsOfDay[0]);
     for (int i = 1; i < SHIFTS_PER_DAY; i++)
     {
-        printf("\t\t   %s", shiftsOfDay[i]);
+        printf(" | %-20s", shiftsOfDay[i]);
+    }
+    printf(" |\n");
+
+    // horizontal ruler
+    for (int i = 0; i < 10; ++i)
+    {
+        printf("-");
+    }
+    printf("|");
+    for (int j = 1; j <= SHIFTS_PER_DAY; j++)
+    {
+        for (int i = 0; i < 22; ++i)
+        {
+            printf("-");
+        }
+        printf("|");
     }
     printf("\n");
 
+    // rows
     for (int i = 0; i < DAYS_PER_WEEK; ++i)
     {
-        printf("%s\t", daysOfWeek[i]);
+        printf("%-9s |", daysOfWeek[i]);
         for (int j = 0; j < SHIFTS_PER_DAY; j++)
         {
-            printf("  %-22.20s", values[i][j]);
+            printf(" %-20.20s |", values[i][j]);
         }
         printf("\n");
     }
@@ -492,11 +555,11 @@ void printScheduleChoices(void)
 
 void changeDoctorSchedule()
 {
+    printScheduleChoices();
     int choice;
     while (1)
     {
-        printScheduleChoices();
-        printf("Which shift do you want to change? ");
+        print("Which shift do you want to change? ");
         if (scand(&choice))
         {
             if (choice >= 1 && choice <= DAYS_PER_WEEK * SHIFTS_PER_DAY)
@@ -511,20 +574,24 @@ void changeDoctorSchedule()
     char* currentDoctor = doctorsSchedule[day][shift];
     char newDoctor[CHAR_BUFFER];
 
-    printf("You have chosen %s %s\n",
-           daysOfWeek[day],
-           shiftsOfDay[shift]);
+    println("You have chosen %s %s",
+            daysOfWeek[day],
+            shiftsOfDay[shift]);
 
     if (strlen(currentDoctor) > 0)
     {
-        printf("%s is the current doctor for this shift.\n", currentDoctor);
-        printf("Replacement: ");
+        println("%s is the current doctor for this shift.", currentDoctor);
+        print("Replacement: ");
     }
     else
     {
-        printf("This shift is currently empty.\n");
-        printf("Doctor to cover this shift: ");
+        println("This shift is currently empty.");
+        print("Doctor to cover this shift: ");
     }
     scans(newDoctor); // can be empty, which would mean no one covers that shift
+    // assign doctor (or lack thereof) to the shift
     sprintf(doctorsSchedule[day][shift], "%s", newDoctor);
+    // print confirmation
+    println("\nSchedule updated successfully.");
+    printDoctorsSchedule(doctorsSchedule);
 }
