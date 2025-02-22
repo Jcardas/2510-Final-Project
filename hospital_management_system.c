@@ -419,11 +419,11 @@ void dischargePatientById()
 
     println("Patient discharged successfully.");
     // Shift remaining elements to the left
-    for (int i = p - patients; i < patientCount - 1; i++)
+    for (int i = p - patients; i < patientCount - 1; ++i)
     {
         patients[i] = patients[i + 1];
     }
-    patientCount--; // Reduce total patient count
+    --patientCount; // Reduce total patient count
 }
 
 void dischargePatientByName()
@@ -445,7 +445,7 @@ void dischargePatientByName()
 
     Patient* p = results->matches[0];
     // Shift remaining elements to the left
-    for (int i = p - patients; i < patientCount - 1; i++)
+    for (int i = p - patients; i < patientCount - 1; ++i)
     {
         patients[i] = patients[i + 1];
     }
@@ -488,9 +488,9 @@ void manageDoctorSchedule()
 
 void initializeDoctorsSchedule()
 {
-    for (int i = 0; i < DAYS_PER_WEEK; i++)
+    for (int i = 0; i < DAYS_PER_WEEK; ++i)
     {
-        for (int j = 0; j < SHIFTS_PER_DAY; j++)
+        for (int j = 0; j < SHIFTS_PER_DAY; ++j)
         {
             sprintf(doctorsSchedule[i][j], "%s", "");
         }
@@ -502,7 +502,7 @@ void printDoctorsSchedule(char values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER
     // column header
     printf(CLR_LINE);
     printf("\t  | %-20s", shiftsOfDay[0]);
-    for (int i = 1; i < SHIFTS_PER_DAY; i++)
+    for (int i = 1; i < SHIFTS_PER_DAY; ++i)
     {
         printf(" | %-20s", shiftsOfDay[i]);
     }
@@ -514,7 +514,7 @@ void printDoctorsSchedule(char values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER
         printf("-");
     }
     printf("|");
-    for (int j = 1; j <= SHIFTS_PER_DAY; j++)
+    for (int j = 1; j <= SHIFTS_PER_DAY; ++j)
     {
         for (int i = 0; i < 22; ++i)
         {
@@ -528,7 +528,7 @@ void printDoctorsSchedule(char values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER
     for (int i = 0; i < DAYS_PER_WEEK; ++i)
     {
         printf("%-9s |", daysOfWeek[i]);
-        for (int j = 0; j < SHIFTS_PER_DAY; j++)
+        for (int j = 0; j < SHIFTS_PER_DAY; ++j)
         {
             printf(" %-20.20s |", values[i][j]);
         }
