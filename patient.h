@@ -20,8 +20,8 @@ typedef struct
 
 typedef struct
 {
-    int matchedIndices[MAX_PATIENTS];
-    int matches;
+    Patient *matches[MAX_PATIENTS];
+    int size;
 } searchResults;
 
 

@@ -361,17 +361,17 @@ searchResults* searchPatientByName()
     for (int i = 0; i < patientCount; ++i)
     {
         if (strcmp(patients[i].name, name) == 0)
-            results->matchedIndices[results->matches++] = i;
+            results->matches[results->size++] = &patients[i];
     }
 
-    if (results->matches)
+    if (results->size)
     {
         println("%d match%s:",
-                results->matches,
-                results->matches > 1 ? "es" : "");
+                results->size,
+                results->size > 1 ? "es" : "");
         printPatientHeader();
-        for (int i = 0; i < results->matches; ++i)
-            printPatient(&patients[results->matchedIndices[i]]);
+        for (int i = 0; i < results->size; ++i)
+            printPatient(results->matches[i]);
     }
     else
     {
@@ -413,53 +413,45 @@ void dischargePatient()
 
 void dischargePatientById()
 {
-    int patientId;
-    while (1)
-    {
-        print("ID: ");
-        if (scandPositive(&patientId))
-            break;
-    }
+    Patient* p = searchPatientById();
+    if (p == NULL)
+        return;
 
-    for (int i = 0; i < patientCount; ++i)
+    println("Patient discharged successfully.");
+    // Shift remaining elements to the left
+    for (int i = p - patients; i < patientCount - 1; i++)
     {
-        if (patients[i].patientId == patientId)
-        {
-            println("\nThe following patient has been discharged:");
-            printPatientHeader();
-            printPatient(&patients[i]);
-            // Shift remaining elements to the left
-            for (int j = i; j < patientCount - 1; j++)
-            {
-                patients[j] = patients[j + 1];
-            }
-            patientCount--; // Reduce total patient count
-            return; // Exit after discharging
-        }
+        patients[i] = patients[i + 1];
     }
-    println("Patient ID not found.");
+    patientCount--; // Reduce total patient count
 }
 
 void dischargePatientByName()
 {
     searchResults* results = searchPatientByName();
 
-    if (results->matches == 0)
-        return;
-    if (results->matches > 1)
+    if (results->size == 0)
     {
+        free(results);
+        return;
+    }
+    if (results->size > 1)
+    {
+        free(results);
         println("Which one to discharge?");
         dischargePatientById();
         return;
     }
 
+    Patient* p = results->matches[0];
     // Shift remaining elements to the left
-    for (int i = results->matchedIndices[0]; i < patientCount - 1; i++)
+    for (int i = p - patients; i < patientCount - 1; i++)
     {
         patients[i] = patients[i + 1];
     }
     --patientCount; // Reduce total patient count
     println("Patient discharged successfully.");
+    free(results);
 }
 
 // ------------- Doctors stuff -------------
