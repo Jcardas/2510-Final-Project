@@ -129,10 +129,4 @@ void dischargePatientByName(const char* patient_name);
  */
 bool checkForPatients();
 
-/**
- * @breif Menu function for managing the doctor weekly schedule.
- *
- */
-void manageDoctorSchedule();
-
 #endif //PATIENT_H

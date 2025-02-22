@@ -10,8 +10,6 @@
 #include "patient.h"
 
 #define CURSOR_UP "\x1b[A"
-#define DAYS_PER_WEEK 7
-#define SHIFTS_PER_DAY 3
 
 // Global array of patients
 Patient patients[MAX_PATIENTS];
@@ -19,10 +17,25 @@ int patientCount = 0;
 
 char doctorsSchedule[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
 
+char daysOfWeek[][CHAR_BUFFER] = {
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+};
+
+char shiftsOfDay[][CHAR_BUFFER] = {
+    "Morning",
+    "Afternoon",
+    "Evening"
+};
+
 int main()
 {
     int menu_choice;
-
     while (1)
     {
         printf("0. Exit\n");
@@ -30,7 +43,7 @@ int main()
         printf("2. View all patient records\n");
         printf("3. Search for a patient\n");
         printf("4. Discharge a patient\n");
-        printf("5. Manage Doctor Schedule\n");
+        printf("5. Manage doctors schedule\n");
         if (!scand(&menu_choice))
             continue;
 
@@ -90,7 +103,7 @@ bool scand(int* num)
     // Best case scenario: just a wrapper for scanf("%d")
     int itemsScanned = scanf("%d", num);
 
-    // Input is not a valid if scanf fails to scan a number,
+    // Input is not valid if scanf fails to scan a number,
     // or there's still something in the input stream
     int c = getchar();
     bool valid = itemsScanned > 0 && (c == '\n' || c == EOF);
@@ -119,7 +132,8 @@ bool scandPositive(int* num)
     return true;
 }
 
-bool scans(char* str)
+
+void scans(char* str)
 {
     fgets(str, CHAR_BUFFER, stdin);
 
@@ -135,7 +149,12 @@ bool scans(char* str)
     {
         *EOL = '\0'; // Replace '\n' with '\0'
     }
+}
 
+
+bool scansNonEmpty(char* str)
+{
+    scans(str);
     bool valid = strlen(str) > 0;
     if (!valid)
         printf(CURSOR_UP);
@@ -154,7 +173,7 @@ bool checkForPatients()
 
 Patient* getPatientByID(int patientId)
 {
-    for (int i = 0; i < patientCount; i++)
+    for (int i = 0; i < patientCount; ++i)
     {
         if (patients[i].patient_id == patientId)
         {
@@ -193,7 +212,7 @@ void addPatient()
     while (1)
     {
         printf("Full name: ");
-        if (scans(newPatient.full_name))
+        if (scansNonEmpty(newPatient.full_name))
             break;
     }
 
@@ -207,7 +226,7 @@ void addPatient()
     while (1)
     {
         printf("Diagnosis: ");
-        if (scans(newPatient.diagnosis))
+        if (scansNonEmpty(newPatient.diagnosis))
             break;
     }
 
@@ -240,7 +259,7 @@ void printPatientHeader()
 void viewAllPatientRecords()
 {
     printPatientHeader();
-    for (int i = 0; i < patientCount; i++)
+    for (int i = 0; i < patientCount; ++i)
     {
         printPatient(&patients[i]);
     }
@@ -249,7 +268,6 @@ void viewAllPatientRecords()
 void searchPatient()
 {
     int searchChoice;
-
     while (1)
     {
         printf("Search by:\n");
@@ -278,7 +296,7 @@ void searchPatient()
             while (1)
             {
                 printf("Search full name: ");
-                if (scans(searchFullName))
+                if (scansNonEmpty(searchFullName))
                     break;
             }
             searchPatientByName(searchFullName);
@@ -303,7 +321,7 @@ void searchPatientByID(int patientID)
 
 void searchPatientByName(const char patient_name[CHAR_BUFFER])
 {
-    for (int i = 0; i < patientCount; i++)
+    for (int i = 0; i < patientCount; ++i)
     {
         if (strcmp(patients[i].full_name, patient_name) == 0)
         {
@@ -347,7 +365,7 @@ void dischargePatient()
             while (1)
             {
                 printf("Full name: ");
-                if (scans(dischargeFullName))
+                if (scansNonEmpty(dischargeFullName))
                     break;
             }
             dischargePatientByName(dischargeFullName);
@@ -360,7 +378,7 @@ void dischargePatient()
 
 void dischargePatientByID(int patientID)
 {
-    for (int i = 0; i < patientCount; i++)
+    for (int i = 0; i < patientCount; ++i)
     {
         if (patients[i].patient_id == patientID)
         {
@@ -382,7 +400,7 @@ void dischargePatientByID(int patientID)
 
 void dischargePatientByName(const char patient_name[CHAR_BUFFER])
 {
-    for (int i = 0; i < patientCount; i++)
+    for (int i = 0; i < patientCount; ++i)
     {
         if (strcmp(patients[i].full_name, patient_name) == 0)
         {
@@ -404,24 +422,109 @@ void dischargePatientByName(const char patient_name[CHAR_BUFFER])
 
 void manageDoctorSchedule()
 {
+    printf("Managing doctors schedule...\n\n");
     int manageChoice;
-
     while (1)
     {
-        printf("1. View Current Doctor Schedule\n");
-        printf("2. Add to Doctor Schedule\n");
+        printf("0. Nevermind; exit.\n");
+        printf("1. View schedule\n");
+        printf("2. Change chedule\n");
         if (!scand(&manageChoice))
             continue;
 
         switch (manageChoice)
         {
-            case 1:
-                printDoctorSchedule(doctorsSchedule);
-            break;
-
-            case 2:
-                printScheduleChoices();
-            break;
+        case 0:
+            return;
+        case 1:
+            printDoctorsSchedule(doctorsSchedule);
+            return;
+        case 2:
+            changeDoctorSchedule();
+            return;
+        default:
+            invalidInput("Invalid choice.");
         }
     }
+}
+
+void initializeDoctorsSchedule()
+{
+    for (int i = 0; i < DAYS_PER_WEEK; i++)
+    {
+        for (int j = 0; j < SHIFTS_PER_DAY; j++)
+        {
+            sprintf(doctorsSchedule[i][j], "%s", "");
+        }
+    }
+}
+
+void printDoctorsSchedule(char values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER])
+{
+    printf("\t  %s", shiftsOfDay[0]);
+    for (int i = 1; i < SHIFTS_PER_DAY; i++)
+    {
+        printf("\t\t   %s", shiftsOfDay[i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < DAYS_PER_WEEK; ++i)
+    {
+        printf("%s\t", daysOfWeek[i]);
+        for (int j = 0; j < SHIFTS_PER_DAY; j++)
+        {
+            printf("  %-22.20s", values[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void printScheduleChoices(void)
+{
+    char choices[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
+
+    for (int i = 0; i < DAYS_PER_WEEK; ++i)
+        for (int j = 0; j < SHIFTS_PER_DAY; ++j)
+            sprintf(choices[i][j], "%d", i * SHIFTS_PER_DAY + j + 1);
+
+    printDoctorsSchedule(choices);
+}
+
+void changeDoctorSchedule()
+{
+    int choice;
+    while (1)
+    {
+        printScheduleChoices();
+        printf("Which shift do you want to change? ");
+        if (scand(&choice))
+        {
+            if (choice >= 1 && choice <= DAYS_PER_WEEK * SHIFTS_PER_DAY)
+                break;
+            invalidInput("Invalid choice.");
+        }
+    }
+
+    int index = choice - 1;
+    int day = index / SHIFTS_PER_DAY;
+    int shift = index % SHIFTS_PER_DAY;
+    char* currentDoctor = doctorsSchedule[day][shift];
+    char newDoctor[CHAR_BUFFER];
+
+    printf("You have chosen %s %s\n",
+           daysOfWeek[day],
+           shiftsOfDay[shift]);
+
+    if (strlen(currentDoctor) > 0)
+    {
+        printf("%s is the current doctor for this shift.\n", currentDoctor);
+        printf("Replacement: ");
+    }
+    else
+    {
+        printf("This shift is currently empty.\n");
+        printf("Doctor to cover this shift: ");
+    }
+    scans(newDoctor); // can be empty, which would mean no one covers that shift
+    sprintf(doctorsSchedule[day][shift], "%s", newDoctor);
 }
