@@ -341,7 +341,7 @@ Patient* searchPatientById()
         println("Patient ID not found.");
         return NULL;
     }
-    println("Search result:");
+    println("");
     printPatientHeader();
     printPatient(p);
     return p;
@@ -366,7 +366,7 @@ searchResults* searchPatientByName()
 
     if (results->size)
     {
-        println("%d match%s:",
+        println("\n%d match%s:",
                 results->size,
                 results->size > 1 ? "es" : "");
         printPatientHeader();
@@ -438,7 +438,7 @@ void dischargePatientByName()
     if (results->size > 1)
     {
         free(results);
-        println("Which one to discharge?");
+        println("\nWhich one to discharge?");
         dischargePatientById();
         return;
     }
