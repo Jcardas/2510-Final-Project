@@ -35,7 +35,7 @@ char shiftsOfDay[][CHAR_BUFFER] = {
 
 int main()
 {
-    int menu_choice;
+    int menuChoice;
     while (1)
     {
         printf("0. Exit\n");
@@ -44,10 +44,10 @@ int main()
         printf("3. Search for a patient\n");
         printf("4. Discharge a patient\n");
         printf("5. Manage doctors schedule\n");
-        if (!scand(&menu_choice))
+        if (!scand(&menuChoice))
             continue;
 
-        switch (menu_choice)
+        switch (menuChoice)
         {
         case 0:
             printf("Exiting...\n");
@@ -171,11 +171,11 @@ bool checkForPatients()
     return true;
 }
 
-Patient* getPatientByID(int patientId)
+Patient* getPatientById(int patientId)
 {
     for (int i = 0; i < patientCount; ++i)
     {
-        if (patients[i].patient_id == patientId)
+        if (patients[i].patientId == patientId)
         {
             return &patients[i];
         }
@@ -198,11 +198,11 @@ void addPatient()
     while (1)
     {
         printf("Patient ID: ");
-        if (scandPositive(&newPatient.patient_id))
+        if (scandPositive(&newPatient.patientId))
             break;
     }
 
-    if (getPatientByID(newPatient.patient_id) != NULL)
+    if (getPatientById(newPatient.patientId) != NULL)
     {
         printf("ERROR: Patient ID already exists.\n");
         return;
@@ -212,7 +212,7 @@ void addPatient()
     while (1)
     {
         printf("Full name: ");
-        if (scansNonEmpty(newPatient.full_name))
+        if (scansNonEmpty(newPatient.name))
             break;
     }
 
@@ -233,7 +233,7 @@ void addPatient()
     while (1)
     {
         printf("Room number: ");
-        if (scandPositive(&newPatient.room_number))
+        if (scandPositive(&newPatient.roomNumber))
             break;
     }
 
@@ -246,7 +246,7 @@ void addPatient()
 void printPatient(Patient* p)
 {
     printf("%-10d\t %-10.10s\t %-3d\t %-10.10s\t %-10d\t\n",
-           p->patient_id, p->full_name, p->age, p->diagnosis, p->room_number);
+           p->patientId, p->name, p->age, p->diagnosis, p->roomNumber);
 }
 
 // Function to print the header containing the details of each patient.
@@ -309,7 +309,7 @@ void searchPatient()
 
 void searchPatientByID(int patientID)
 {
-    Patient* p = getPatientByID(patientID);
+    Patient* p = getPatientById(patientID);
     if (p == NULL)
     {
         printf("Patient ID not found.\n");
@@ -319,11 +319,11 @@ void searchPatientByID(int patientID)
     printPatient(p);
 }
 
-void searchPatientByName(const char patient_name[CHAR_BUFFER])
+void searchPatientByName(const char name[CHAR_BUFFER])
 {
     for (int i = 0; i < patientCount; ++i)
     {
-        if (strcmp(patients[i].full_name, patient_name) == 0)
+        if (strcmp(patients[i].name, name) == 0)
         {
             printPatient(&patients[i]);
             return;
@@ -359,7 +359,7 @@ void dischargePatient()
                 if (scandPositive(&dischargeID))
                     break;
             }
-            dischargePatientByID(dischargeID);
+            dischargePatientById(dischargeID);
             return;
         case 2:
             while (1)
@@ -376,13 +376,13 @@ void dischargePatient()
     }
 }
 
-void dischargePatientByID(int patientID)
+void dischargePatientById(int patientID)
 {
     for (int i = 0; i < patientCount; ++i)
     {
-        if (patients[i].patient_id == patientID)
+        if (patients[i].patientId == patientID)
         {
-            printf("Discharging patient: %s (ID: %d)\n", patients[i].full_name, patients[i].patient_id);
+            printf("Discharging patient: %s (ID: %d)\n", patients[i].name, patients[i].patientId);
 
             // Shift remaining elements to the left
             for (int j = i; j < patientCount - 1; j++)
@@ -398,13 +398,13 @@ void dischargePatientByID(int patientID)
     printf("No patient found with ID: %d\n", patientID);
 }
 
-void dischargePatientByName(const char patient_name[CHAR_BUFFER])
+void dischargePatientByName(const char name[CHAR_BUFFER])
 {
     for (int i = 0; i < patientCount; ++i)
     {
-        if (strcmp(patients[i].full_name, patient_name) == 0)
+        if (strcmp(patients[i].name, name) == 0)
         {
-            printf("Discharging patient: %s (ID: %d)\n", patients[i].full_name, patients[i].patient_id);
+            printf("Discharging patient: %s (ID: %d)\n", patients[i].name, patients[i].patientId);
 
             // Shift remaining elements to the left
             for (int j = i; j < patientCount - 1; j++)
@@ -417,7 +417,7 @@ void dischargePatientByName(const char patient_name[CHAR_BUFFER])
             return; // Exit after discharging
         }
     }
-    printf("No patient found with name: %s\n", patient_name);
+    printf("No patient found with name: %s\n", name);
 }
 
 void manageDoctorSchedule()

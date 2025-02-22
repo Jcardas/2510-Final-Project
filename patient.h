@@ -11,11 +11,11 @@
 
 typedef struct
 {
-    int patient_id;
-    char full_name[CHAR_BUFFER];
+    int patientId;
+    char name[CHAR_BUFFER];
     int age;
     char diagnosis[CHAR_BUFFER];
-    int room_number;
+    int roomNumber;
 } Patient;
 
 /**
@@ -23,7 +23,7 @@ typedef struct
  * @param patientId patient's id
  * @return pointer to a Patient, NULL if not found
  */
-Patient* getPatientByID(int patientId);
+Patient* getPatientById(int patientId);
 
 /**
  * @brief Adds a new patient record to the system.
@@ -71,23 +71,23 @@ void searchPatient();
 /**
  * @brief Searches for a patient by their unique ID.
  *
- * @param patient_id The unique identifier of the patient.
+ * @param patientId The unique identifier of the patient.
  *
  * If a patient with the given ID exists, their details are displayed.
  * Otherwise, a message is printed indicating that no such patient was found.
  */
-void searchPatientByID(int patient_id);
+void searchPatientByID(int patientId);
 
 /**
  * @brief Searches for a patient by their name.
  *
- * @param patient_name The full name of the patient to search for.
+ * @param name The full name of the patient to search for.
  *
  * If a patient with the given name exists, their details are displayed.
  * If multiple patients have the same name, all matching records are shown.
  * If no match is found, an appropriate message is displayed.
  */
-void searchPatientByName(const char patient_name[CHAR_BUFFER]);
+void searchPatientByName(const char name[CHAR_BUFFER]);
 
 
 /**
@@ -101,23 +101,23 @@ void dischargePatient();
 /**
  * @brief Discharges a patient by their unique ID.
  *
- * @param patient_id The unique identifier of the patient to be discharged.
+ * @param patientId The unique identifier of the patient to be discharged.
  *
  * Removes the patient record from the system if found. If no patient
  * with the given ID exists, an error message is displayed.
  */
-void dischargePatientByID(int patient_id);
+void dischargePatientById(int patientId);
 
 /**
  * @brief Discharges a patient by their name.
  *
- * @param patient_name The name of the patient to be discharged.
+ * @param name The name of the patient to be discharged.
  *
  * If multiple patients share the same name, the user may be prompted
  * to confirm which patient to remove. If no patient
  * with the given Name exists, an error message is displayed.
  */
-void dischargePatientByName(const char* patient_name);
+void dischargePatientByName(const char* name);
 
 /**
  * @brief Checks if there are any patients in the system.
