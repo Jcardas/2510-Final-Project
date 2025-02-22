@@ -1,5 +1,6 @@
 //
-// Created by Justin Cardas and Felix Nguyen on 2025-02-08.
+// Hospital Management System
+// Created by Justin Cardas and Felix Nguyen
 //
 
 #include <stdbool.h>
