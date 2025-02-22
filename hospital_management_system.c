@@ -37,6 +37,7 @@ char shiftsOfDay[][CHAR_BUFFER] = {
     "Evening"
 };
 
+// ------------- Main menu -------------
 
 int main()
 {
@@ -70,7 +71,7 @@ bool mainMenu()
         switch (menuChoice)
         {
         case 0:
-            println("Exiting...");
+            println(CLR_SCREEN);
             return false;
         case 1:
             addPatient();
@@ -96,46 +97,7 @@ bool mainMenu()
     }
 }
 
-void invalidInput(char message[])
-{
-    if (message == NULL)
-        message = "Invalid input.";
-    printf(CLR_LINE);
-    printf(message);
-    printf(CURSOR_UP);
-    printf(CLR_LINE);
-}
-
-bool scand(int* num)
-{
-    // Best case scenario: just a wrapper for scanf("%d")
-    int itemsScanned = scanf("%d", num);
-
-    // Input is not valid if scanf fails to scan a number,
-    // or there's still something in the input stream
-    int c = getchar();
-    bool valid = itemsScanned > 0 && (c == '\n' || c == EOF);
-
-    if (valid)
-        return true;
-
-    invalidInput("Input must be a number.");
-    // Flush the input stream
-    while ((c = getchar()) != '\n' && c != EOF);
-    return false;
-}
-
-
-bool scandPositive(int* num)
-{
-    if (!scand(num))
-        return false;
-    if (*num >= 0)
-        return true;
-    invalidInput("Number must be non-negative.");
-    return false;
-}
-
+// ------------- IO & Input validation -------------
 
 bool scans(char* str)
 {
@@ -170,6 +132,33 @@ bool scansNonEmpty(char* str)
     return false;
 }
 
+bool scand(int* num)
+{
+    // Use scans and convert it to int instead of scanf("%d),
+    // because the former can handle empty input.
+
+    char input[CHAR_BUFFER];
+    if (!scansNonEmpty(input))
+        return false;
+
+    char* endptr;
+    *num = strtol(input, &endptr, 10);
+    if (*endptr == '\0')
+        return true;
+    invalidInput("Input must be a number.");
+    return false;
+}
+
+bool scandPositive(int* num)
+{
+    if (!scand(num))
+        return false;
+    if (*num >= 0)
+        return true;
+    invalidInput("Number must be non-negative.");
+    return false;
+}
+
 void print(const char* format, ...)
 {
     va_list args;
@@ -185,6 +174,17 @@ void println(const char* format, ...)
     printf("\n");
 }
 
+void invalidInput(char message[])
+{
+    if (message == NULL)
+        message = "Invalid input.";
+    printf(CLR_LINE);
+    printf(message);
+    printf(CURSOR_UP);
+    printf(CLR_LINE);
+}
+
+// ------------- Patients -------------
 
 bool checkForPatients()
 {
@@ -268,14 +268,12 @@ void addPatient()
     printPatient(&newPatient);
 }
 
-// Function to print all the details of a patient at the passed index.
 void printPatient(Patient* p)
 {
     println("%-5d\t %-10.10s\t %-3d\t %-20.20s\t %-5d",
             p->patientId, p->name, p->age, p->diagnosis, p->roomNumber);
 }
 
-// Function to print the header containing the details of each patient.
 void printPatientHeader()
 {
     println("%-5s\t %-10s\t %-3s\t %-20s\t %-5s",
@@ -458,6 +456,8 @@ void dischargePatientByName()
     --patientCount; // Reduce total patient count
     println("Patient discharged successfully.");
 }
+
+// ------------- Doctors stuff -------------
 
 void manageDoctorSchedule()
 {

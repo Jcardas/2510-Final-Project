@@ -20,7 +20,7 @@
 bool mainMenu();
 
 /**
- * @brief Convenient wrapper for scanf("%d"),
+ * @brief Convenient alternative for scanf("%d"),
  *
  * Clears the input stream,
  * display an error message if input is invalid,
