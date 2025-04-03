@@ -7,13 +7,11 @@
 #include "patient.h"
 #include "file.h"
 #include "TUI.h"
-
-Patient patients[MAX_PATIENTS];
-int patientCount = 0;
+#include "patientsList.c"
 
 bool checkForPatients()
 {
-        if (patientCount <= 0) {
+        if (patientsList == NULL) {
                 println("ERROR: No patients in system.");
                 return false;
         }
@@ -22,21 +20,15 @@ bool checkForPatients()
 
 Patient *getPatientById(int patientId)
 {
-        for (int i = 0; i < patientCount; ++i) {
-                if (patients[i].patientId == patientId) {
-                        return &patients[i];
-                }
+        PatientNodePtr node = search(patientsList, patientId);
+        if (node == NULL) {
+                return NULL;
         }
-        return NULL;
+        return &node->data;
 }
 
 void addPatient()
 {
-        if (patientCount >= MAX_PATIENTS) {
-                println("ERROR: Too many patients in system.");
-                return;
-        }
-
         printf(CLR_SCREEN);
         println("Adding new patient...\n");
 
@@ -76,18 +68,13 @@ void addPatient()
                         break;
         }
 
-        // Finally, store the patient's record in the patients array
-        // and update the patient count.
-        patients[patientCount++] = newPatient;
-        println("\nThe following patient has been added:");
-        printPatientHeader();
-        printPatient(&newPatient);
+        add(&patientsList, newPatient);
 }
 
-void printPatient(Patient *p)
+void printPatient(Patient p)
 {
-        println("%-5d\t %-10.10s\t %-3d\t %-20.20s\t %-5d", p->patientId,
-                p->name, p->age, p->diagnosis, p->roomNumber);
+        println("%-5d\t %-10.10s\t %-3d\t %-20.20s\t %-5d", p.patientId, p.name,
+                p.age, p.diagnosis, p.roomNumber);
 }
 
 void printPatientHeader()
@@ -98,16 +85,15 @@ void printPatientHeader()
 
 void viewAllPatientRecords()
 {
-        printf(CLR_SCREEN);
+        clrscr();
         println("All patient records:\n");
         printPatientHeader();
-        for (int i = 0; i < patientCount; ++i)
-                printPatient(&patients[i]);
+        forEach(patientsList, printPatient);
 }
 
 void searchPatient()
 {
-        printf(CLR_SCREEN);
+        clrscr();
         println("Search patient by:");
         println("0. Nevermind; exit.");
         println("1. ID");
@@ -154,31 +140,34 @@ Patient *searchPatientById()
         return p;
 }
 
-searchResults *searchPatientByName()
+char searchedName[CHAR_BUFFER];
+PatientNodePtr searchResults;
+
+void matchName(Patient p)
+{
+        if (strcmp(p.name, searchedName) == 0) {
+                add(&searchResults, p);
+        }
+}
+
+void searchPatientByName()
 {
         char name[CHAR_BUFFER];
         while (1) {
                 print("Full name: ");
-                if (scansNonEmpty(name))
+                if (scansNonEmpty(searchedName))
                         break;
         }
 
-        searchResults *results = malloc(sizeof(searchResults));
-        for (int i = 0; i < patientCount; ++i) {
-                if (strcmp(patients[i].name, name) == 0)
-                        results->matches[results->size++] = &patients[i];
-        }
+        searchResults = NULL;
+        forEach(patientsList, matchName);
 
-        if (results->size) {
-                println("\n%d match%s:", results->size,
-                        results->size > 1 ? "es" : "");
+        if (searchResults != NULL) {
                 printPatientHeader();
-                for (int i = 0; i < results->size; ++i)
-                        printPatient(results->matches[i]);
+                forEach(searchResults, printPatient);
         } else {
                 println("Patient name not found.");
         }
-        return results;
 }
 
 void dischargePatient()
@@ -213,38 +202,27 @@ void dischargePatient()
 void dischargePatientById()
 {
         Patient *p = searchPatientById();
-        if (p == NULL)
+        if (p == NULL) {
+                println("Patient ID not found.");
                 return;
+        }
 
         println("Patient discharged successfully.");
-        // Shift remaining elements to the left
-        for (int i = p - patients; i < patientCount - 1; ++i) {
-                patients[i] = patients[i + 1];
-        }
-        --patientCount; // Reduce total patient count
+        delete (&patientsList, p->patientId);
 }
 
 void dischargePatientByName()
 {
-        searchResults *results = searchPatientByName();
+        searchPatientByName();
 
-        if (results->size == 0) {
-                free(results);
+        if (searchResults == NULL)
                 return;
-        }
-        if (results->size > 1) {
-                free(results);
+
+        if (searchResults->next != NULL) {
                 println("\nWhich one to discharge?");
                 dischargePatientById();
                 return;
         }
 
-        Patient *p = results->matches[0];
-        // Shift remaining elements to the left
-        for (int i = p - patients; i < patientCount - 1; ++i) {
-                patients[i] = patients[i + 1];
-        }
-        --patientCount; // Reduce total patient count
-        println("Patient discharged successfully.");
-        free(results);
+        delete(&patientsList, searchResults->data.patientId);
 }

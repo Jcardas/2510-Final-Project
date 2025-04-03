@@ -17,11 +17,6 @@ typedef struct {
         int roomNumber;
 } Patient;
 
-typedef struct {
-        Patient *matches[MAX_PATIENTS];
-        int size;
-} searchResults;
-
 /**
  * @brief Gets a patient by id.
  * @param patientId patient's id

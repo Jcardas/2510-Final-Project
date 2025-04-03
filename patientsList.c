@@ -1,56 +1,56 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <stdlib.h>
 
 #include "patientsList.h"
+#include "patient.h"
+#include "main.h"
+
 
 typedef PatientNode *PatientNodePtr;
 
-void add(PatientNode **head, Patient patient)
+PatientNodePtr patientsList = NULL;
+
+void add(PatientNodePtr *patientList, Patient patient)
 {
         // Allocate memory for the new node
-        PatientNode *newNode = (PatientNode *)malloc(sizeof(PatientNode));
-        if (newNode == NULL) {
-                fprintf(stderr, "Memory allocation failed\n");
-                exit(EXIT_FAILURE);
-        }
+        PatientNodePtr newNodePtr = (PatientNodePtr)malloc(sizeof(PatientNode));
 
         // Assign data to the new node and set 'next' to NULL
-        newNode->data = patient;
-        newNode->next = NULL;
+        newNodePtr->data = patient;
+        newNodePtr->next = NULL;
 
         // If the list is empty, the new node becomes the head
-        if (*head == NULL) {
-                *head = newNode;
+        if (*patientList == NULL) {
+                *patientList = newNodePtr;
                 return;
         }
 
         // Traverse to the last node
-        PatientNode *last = *head;
+        PatientNodePtr last = *patientList;
         while (last->next != NULL) {
                 last = last->next;
         }
 
         // Point the 'next' of the last node to the new node
-        last->next = newNode;
+        last->next = newNodePtr;
 }
 
-// Function to delete a node with a given key from the list
-void delete(PatientNode *head, Patient patient)
+void delete(PatientNodePtr *patientList, const int patientId)
 {
-        // Store head node
-        PatientNode *temp = head, *prev = NULL;
+        // temp initialized as pointer to the head node,
+        // it will be traversed
+        PatientNodePtr temp = *patientList;
 
-        // If the head node itself contains the key to be deleted
-        if (temp != NULL && temp->data.patientId == patient.patientId) {
-                head = temp->next; // Changed head
-                free(temp); // free old head
+        // If the head node itself is to be deleted
+        if (temp != NULL && temp->data.patientId == patientId) {
+                *patientList = temp->next;
+                free(temp);
                 return;
         }
 
-        // Search for the key to be deleted, keep track of the
-        // previous node as we need to change 'prev->next'
-        while (temp != NULL && temp->data.patientId != patient.patientId) {
+        // Search for the patient to be deleted by ID
+        PatientNodePtr prev = NULL;
+        while (temp != NULL && temp->data.patientId != patientId) {
                 prev = temp;
                 temp = temp->next;
         }
@@ -61,29 +61,27 @@ void delete(PatientNode *head, Patient patient)
 
         // Unlink the node from linked list
         prev->next = temp->next;
-
-        // Free memory
         free(temp);
 }
 
-// Function to search for a node with a given key in the list
-bool search(PatientNode *head, Patient patient)
+// Search for patient in a list
+PatientNodePtr search(PatientNodePtr patientList, const int patientId)
 {
-        PatientNode *current = head; // Initialize current
+        PatientNodePtr current = patientList; // Initialize current
         while (current != NULL) {
-                if (current->data.patientId == patient.patientId)
-                        return true; // data found
+                if (current->data.patientId == patientId)
+                        return current;
                 current = current->next;
         }
-        return false; // data not found
+        return NULL;
 }
 
 // Function to print the linked list
-void printList(PatientNode *node)
+void forEach(PatientNodePtr patientList, void (*then)(Patient))
 {
-        while (node != NULL) {
-                printf(" %s ", node->data.name);
-                node = node->next;
+        PatientNodePtr head = patientList;
+        while (head != NULL) {
+                (*then)(head->data);
+                head = head->next;
         }
-        printf("\n");
 }
