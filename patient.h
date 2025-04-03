@@ -5,8 +5,6 @@
 #ifndef PATIENT_H
 #define PATIENT_H
 
-#include "main.h"
-
 #define MAX_PATIENTS 100
 
 typedef struct {

@@ -1,8 +1,6 @@
 #ifndef TUI_H
 #define TUI_H
 
-#include <stdbool.h>
-
 #define CURSOR_UP "\x1b[A\r"
 #define CLR_LINE "\33[2K\r"
 #define CLR_SCREEN "\033c"
