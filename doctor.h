@@ -2,8 +2,8 @@
 // Created by felix on 2/17/25.
 //
 
-#ifndef HOSPITAL_H
-#define HOSPITAL_H
+#ifndef DOCTOR_H
+#define DOCTOR_H
 
 #define DAYS_PER_WEEK 7
 #define SHIFTS_PER_DAY 3
@@ -28,12 +28,12 @@ bool mainMenu();
  *
  * @return whether input is valid
  */
-bool scand(int* num);
+bool scand(int *num);
 
 /**
  * @brief scand, but the number must be positive.
  */
-bool scandPositive(int* num);
+bool scandPositive(int *num);
 
 /**
  * @brief Convenient wrapper for fgets with error handling
@@ -43,28 +43,28 @@ bool scandPositive(int* num);
  *
  * @return Whether there is a buffer overflow
  */
-bool scans(char* str);
+bool scans(char *str);
 
 /**
  * @brief scans, but the input must be non-empty.
  *
  * @return whether input is non-empty
  */
-bool scansNonEmpty(char* str);
+bool scansNonEmpty(char *str);
 
 /**
  * Convenient wrapper for printf.
  *
  * Clears the current line and prints.
  */
-void print(const char* format, ...);
+void print(const char *format, ...);
 
 /**
  * Convenient wrapper for printf.
  *
  * Clears the current line and prints with an ending <pre>\n</pre>.
  */
-void println(const char* format, ...);
+void println(const char *format, ...);
 
 /**
  * @brief Displays an error message that the user input was invalid.
@@ -81,8 +81,8 @@ void initializeDoctorsSchedule();
  *
  * @param values Values to fill the schedule
  */
-void printDoctorsSchedule(char values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER]);
-
+void printDoctorsSchedule(
+        char values[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER]);
 
 /**
  * @brief Prints the doctors schedule as a menu choice.
@@ -104,4 +104,5 @@ void manageDoctorSchedule();
  * and the name of the doctor to cover that shift.
  */
 void changeDoctorSchedule();
-#endif //HOSPITAL_H
+
+#endif //DOCTOR_H
