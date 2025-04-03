@@ -50,6 +50,7 @@ bool mainMenu()
                         return false;
                 case 1:
                         addPatient();
+                        updateFile(file);
                         return true;
                 case 2:
                         if (checkForPatients())
@@ -60,8 +61,10 @@ bool mainMenu()
                                 searchPatient();
                         return true;
                 case 4:
-                        if (checkForPatients())
+                        if (checkForPatients()) {
                                 dischargePatient();
+                                updateFile(file);
+                        }
                         return true;
                 case 5:
                         manageDoctorSchedule();

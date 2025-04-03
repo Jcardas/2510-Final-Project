@@ -24,6 +24,8 @@ PatientNodePtr populatePatientNodesFromFile(FILE *file);
 /**
 * @brief Updates the file with the current PatientArray.
 */
-void updateFile(FILE *file, PatientNode patients);
+void updateFile(FILE *file);
+
+void writePatientToFile(Patient patient);
 
 #endif //FILE_H

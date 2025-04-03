@@ -63,22 +63,24 @@ PatientNodePtr populatePatientNodesFromFile(FILE *file)
         return patientsList;
 }
 
-void updateFile(FILE *file, PatientNode patients)
+FILE *dataFile = NULL;
+
+void updateFile(FILE *file)
 {
-        FILE *dataFile =
+        dataFile =
                 fopen(FILE_NAME, "w"); // Open in write mode to overwrite
         if (dataFile == NULL) {
                 printf("Error opening file for overwriting\n");
                 return;
         }
-        PatientNode *thisPatient = &patients; // Start from the first node
-
-        while (thisPatient != NULL) {
-                fprintf(dataFile, "%d|%s|%d|%s|%d\n",
-                        thisPatient->data.patientId, thisPatient->data.name,
-                        thisPatient->data.age, thisPatient->data.diagnosis,
-                        thisPatient->data.roomNumber);
-                thisPatient = thisPatient->next; // Move to next node
-        }
+        forEach(patientsList, writePatientToFile);
         fclose(dataFile); // Close file
+}
+
+void writePatientToFile(Patient patient)
+{
+        fprintf(dataFile, "%d|%s|%d|%s|%d\n",
+                patientsList->data.patientId, patientsList->data.name,
+                patientsList->data.age, patientsList->data.diagnosis,
+                patientsList->data.roomNumber);
 }
