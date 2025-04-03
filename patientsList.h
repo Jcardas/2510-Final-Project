@@ -5,7 +5,6 @@
 #ifndef PATIENTSLIST_H
 #define PATIENTSLIST_H
 
-#include <stdbool.h>
 #include "patient.h"
 
 // Definition for a node in the linked list

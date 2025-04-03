@@ -29,7 +29,7 @@ int main()
 bool mainMenu()
 {
         FILE* file = initializeFile();
-        populatePatientNodesFromFile(file);
+        populatePatientNodesFromFile(patientsList, file);
 
         println("Welcome to the hospital management system.");
         println("0. Exit");

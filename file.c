@@ -24,8 +24,6 @@ FILE *initializeFile()
 
 void populatePatientNodesFromFile(PatientNodePtr patients, FILE *file)
 {
-        PatientNode *thisPatient = &patients; // Start from the first node
-
         char line[MAX_LINE_LENGTH];
         while (fgets(line, sizeof(line), file) !=
                NULL) { // Read through the file line by line.
@@ -54,7 +52,7 @@ void populatePatientNodesFromFile(PatientNodePtr patients, FILE *file)
                         newPatient.roomNumber = patientRoomNum;
                         strcpy(newPatient.diagnosis, patientDiagnosis);
 
-                        add(&thisPatient, newPatient);
+                        add(&patients, newPatient);
                 }
         }
 }

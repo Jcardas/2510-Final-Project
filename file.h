@@ -3,8 +3,7 @@
 //
 
 #include <stdio.h>
-#include "patient.h"
-#include "main.h"
+#include "patientsList.h"
 
 #ifndef FILE_H
 #define FILE_H
@@ -20,7 +19,7 @@ FILE* initializeFile();
 * reading the file and parsing the data.
 *
 */
-void populatePatientNodesFromFile(PatientNode patients, FILE * file);
+void populatePatientNodesFromFile(PatientNodePtr patients, FILE * file);
 
 /**
 * @brief Updates the file with the current PatientArray.
