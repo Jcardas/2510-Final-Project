@@ -3,10 +3,8 @@
 
 #include "patientsList.h"
 #include "patient.h"
-#include "main.h"
 
-
-PatientNodePtr patientsList = NULL;
+typedef PatientNode *PatientNodePtr;
 
 void add(PatientNodePtr *patientList, Patient patient)
 {

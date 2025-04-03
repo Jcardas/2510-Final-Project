@@ -8,12 +8,9 @@
 
 #include "main.h"
 #include "patient.h"
-#include "patientsList.h"
 #include "doctor.h"
 #include "TUI.h"
 #include "file.h"
-
-PatientNodePtr patientsList = NULL;
 
 int main()
 {
@@ -26,10 +23,12 @@ int main()
         }
 }
 
+PatientNodePtr patientsList = NULL;
+
 bool mainMenu()
 {
-        FILE* file = initializeFile();
-        populatePatientNodesFromFile(patientsList, file);
+        FILE *file = initializeFile();
+        populatePatientNodesFromFile(file);
 
         println("Welcome to the hospital management system.");
         println("0. Exit");

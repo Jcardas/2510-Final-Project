@@ -9,10 +9,9 @@
 
 // Definition for a node in the linked list
 typedef struct PatientNode {
-        Patient data;              // Patient data stored in the node
-        struct PatientNode *next;  // Pointer to the next node in the list
+        Patient data; // Patient data stored in the node
+        struct PatientNode *next; // Pointer to the next node in the list
 } PatientNode;
-
 
 typedef PatientNode *PatientNodePtr;
 

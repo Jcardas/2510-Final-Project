@@ -9,7 +9,6 @@
 #define MAX_LINE_LENGTH 1024
 #define FILE_NAME "patients.txt"
 
-#include "main.h"
 #include "file.h"
 #include "patient.h"
 #include "patientsList.h"
@@ -22,8 +21,13 @@ FILE *initializeFile()
         return dataFile;
 }
 
-void populatePatientNodesFromFile(PatientNodePtr patients, FILE *file)
+extern PatientNodePtr patientsList;
+;
+
+PatientNodePtr populatePatientNodesFromFile(FILE *file)
 {
+        PatientNodePtr patientsList = malloc(sizeof(PatientNode));
+
         char line[MAX_LINE_LENGTH];
         while (fgets(line, sizeof(line), file) !=
                NULL) { // Read through the file line by line.
@@ -52,9 +56,11 @@ void populatePatientNodesFromFile(PatientNodePtr patients, FILE *file)
                         newPatient.roomNumber = patientRoomNum;
                         strcpy(newPatient.diagnosis, patientDiagnosis);
 
-                        add(&patients, newPatient);
+                        add(&patientsList, newPatient);
                 }
         }
+
+        return patientsList;
 }
 
 void updateFile(FILE *file, PatientNode patients)

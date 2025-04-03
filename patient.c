@@ -6,7 +6,10 @@
 #include "main.h"
 #include "patient.h"
 #include "TUI.h"
-#include "patientsList.c"
+#include "patientsList.h"
+
+
+extern PatientNodePtr patientsList;
 
 bool checkForPatients()
 {
@@ -222,5 +225,5 @@ void dischargePatientByName()
                 return;
         }
 
-        delete(&patientsList, searchResults->data.patientId);
+        delete (&patientsList, searchResults->data.patientId);
 }
