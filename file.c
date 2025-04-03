@@ -26,7 +26,6 @@ extern PatientNodePtr patientsList;
 
 PatientNodePtr populatePatientNodesFromFile(FILE *file)
 {
-        PatientNodePtr patientsList = malloc(sizeof(PatientNode));
 
         char line[MAX_LINE_LENGTH];
         while (fgets(line, sizeof(line), file) !=
@@ -80,7 +79,7 @@ void updateFile(FILE *file)
 void writePatientToFile(Patient patient)
 {
         fprintf(dataFile, "%d|%s|%d|%s|%d\n",
-                patientsList->data.patientId, patientsList->data.name,
-                patientsList->data.age, patientsList->data.diagnosis,
-                patientsList->data.roomNumber);
+                patient.patientId, patient.name,
+                patient.age, patient.diagnosis,
+                patient.roomNumber);
 }

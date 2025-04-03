@@ -12,8 +12,12 @@
 #include "TUI.h"
 #include "file.h"
 
+FILE *file;
+
 int main()
 {
+        file = initializeFile();
+        populatePatientNodesFromFile(file);
         while (1) {
                 clrscr();
                 if (!mainMenu())
@@ -27,8 +31,6 @@ PatientNodePtr patientsList = NULL;
 
 bool mainMenu()
 {
-        FILE *file = initializeFile();
-        populatePatientNodesFromFile(file);
 
         println("Welcome to the hospital management system.");
         println("0. Exit");
