@@ -7,6 +7,7 @@
 #include <string.h>
 
 #define MAX_LINE_LENGTH 1024
+#define FILE_NAME "patients.txt"
 
 #include "main.h"
 #include "file.h"
@@ -16,9 +17,9 @@
 
 FILE *initializeFile()
 {
-        FILE *dataFile = fopen("patients.txt", "r+");
+        FILE *dataFile = fopen(FILE_NAME, "r+");
         if (dataFile == NULL) {
-                dataFile = fopen("patients.txt", "w+");
+                dataFile = fopen(FILE_NAME, "w+");
         }
         return dataFile;
 }
@@ -55,7 +56,26 @@ void populatePatientNodesFromFile(FILE *file)
         }
 }
 
-void updateFile(FILE *file, Patient *p)
+void updateFile(FILE *file)
 {
-        //TODO
+        FILE* dataFile = fopen(FILE_NAME, "w"); // Open in write mode to overwrite
+        if(dataFile == NULL)
+        {
+                printf("Error opening file for overwriting\n");
+                return;
+        }
+        PatientNode *thisPatient = patientsList; // Start from the first node
+
+        while (thisPatient != NULL)
+                {
+                        fprintf(dataFile, "%d|%s|%d|%s|%d\n",
+                                thisPatient->data.patientId,
+                                thisPatient->data.name,
+                                thisPatient->data.age,
+                                thisPatient->data.diagnosis,
+                                thisPatient->data.roomNumber
+                                );
+                        thisPatient = thisPatient->next; // Move to next node
+                }
+        fclose(dataFile); // Close file
 }
