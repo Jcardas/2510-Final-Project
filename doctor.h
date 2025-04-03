@@ -5,6 +5,8 @@
 #ifndef DOCTOR_H
 #define DOCTOR_H
 
+#include "main.h"
+
 #define DAYS_PER_WEEK 7
 #define SHIFTS_PER_DAY 3
 

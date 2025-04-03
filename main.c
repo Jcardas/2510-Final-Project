@@ -10,6 +10,7 @@
 #include "patient.h"
 #include "doctor.h"
 #include "TUI.h"
+#include "file.h"
 
 int main()
 {
@@ -24,6 +25,9 @@ int main()
 
 bool mainMenu()
 {
+        FILE* file = initializeFile();
+        populatePatientNodesFromFile(file);
+
         println("Welcome to the hospital management system.");
         println("0. Exit");
         println("1. Add new patient");

@@ -93,7 +93,7 @@ void invalidInput(char message[])
         if (message == NULL)
                 message = "Invalid input.";
         printf(CLR_LINE);
-        printf(message);
+        printf("%s", message);
         printf(CURSOR_UP);
         printf(CLR_LINE);
 }

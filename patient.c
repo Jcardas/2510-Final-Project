@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "main.h"
 #include "patient.h"
+#include "file.h"
 #include "TUI.h"
 
 Patient patients[MAX_PATIENTS];

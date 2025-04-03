@@ -5,6 +5,8 @@
 #define CLR_LINE "\33[2K\r"
 #define CLR_SCREEN "\033c"
 
+#include "main.h"
+
 /**
  * @brief Runs the program's main menu.
  *

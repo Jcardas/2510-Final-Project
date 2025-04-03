@@ -10,6 +10,10 @@ typedef struct PatientNode {
         struct PatientNode *next;
 } PatientNode;
 
+typedef PatientNode *PatientNodePtr;
+
+PatientNodePtr patientsList = NULL;
+
 void add(PatientNode **head, Patient patient)
 {
         // Allocate memory for the new node
