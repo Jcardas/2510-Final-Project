@@ -19,7 +19,7 @@ FILE *initializeFile();
 * reading the file and parsing the data.
 *
 */
-PatientNodePtr populatePatientNodesFromFile(FILE *file);
+void populatePatientsFromFile(FILE *file);
 
 /**
 * @brief Updates the file with the current PatientArray.

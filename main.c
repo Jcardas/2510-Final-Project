@@ -17,7 +17,7 @@ FILE *file;
 int main()
 {
         file = initializeFile();
-        populatePatientNodesFromFile(file);
+        populatePatientsFromFile(file);
         while (1) {
                 clrscr();
                 if (!mainMenu())
@@ -31,7 +31,6 @@ PatientNodePtr patientsList = NULL;
 
 bool mainMenu()
 {
-
         println("Welcome to the hospital management system.");
         println("0. Exit");
         println("1. Add new patient");

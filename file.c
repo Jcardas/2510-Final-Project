@@ -22,11 +22,9 @@ FILE *initializeFile()
 }
 
 extern PatientNodePtr patientsList;
-;
 
-PatientNodePtr populatePatientNodesFromFile(FILE *file)
+void populatePatientsFromFile(FILE *file)
 {
-
         char line[MAX_LINE_LENGTH];
         while (fgets(line, sizeof(line), file) !=
                NULL) { // Read through the file line by line.
@@ -58,16 +56,13 @@ PatientNodePtr populatePatientNodesFromFile(FILE *file)
                         add(&patientsList, newPatient);
                 }
         }
-
-        return patientsList;
 }
 
 FILE *dataFile = NULL;
 
 void updateFile(FILE *file)
 {
-        dataFile =
-                fopen(FILE_NAME, "w"); // Open in write mode to overwrite
+        dataFile = fopen(FILE_NAME, "w"); // Open in write mode to overwrite
         if (dataFile == NULL) {
                 printf("Error opening file for overwriting\n");
                 return;
@@ -78,8 +73,6 @@ void updateFile(FILE *file)
 
 void writePatientToFile(Patient patient)
 {
-        fprintf(dataFile, "%d|%s|%d|%s|%d\n",
-                patient.patientId, patient.name,
-                patient.age, patient.diagnosis,
-                patient.roomNumber);
+        fprintf(dataFile, "%d|%s|%d|%s|%d\n", patient.patientId, patient.name,
+                patient.age, patient.diagnosis, patient.roomNumber);
 }
