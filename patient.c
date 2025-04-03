@@ -5,7 +5,6 @@
 
 #include "main.h"
 #include "patient.h"
-#include "file.h"
 #include "TUI.h"
 #include "patientsList.c"
 
@@ -136,7 +135,7 @@ Patient *searchPatientById()
         }
         println("");
         printPatientHeader();
-        printPatient(p);
+        printPatient(*p);
         return p;
 }
 
@@ -152,7 +151,6 @@ void matchName(Patient p)
 
 void searchPatientByName()
 {
-        char name[CHAR_BUFFER];
         while (1) {
                 print("Full name: ");
                 if (scansNonEmpty(searchedName))

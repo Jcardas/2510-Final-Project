@@ -44,7 +44,7 @@ void printPatientHeader();
  *
  * @param p pointer to patient
  */
-void printPatient(Patient *p);
+void printPatient(Patient p);
 
 /**
  * @brief Deletes a patient record at the specified index in the patients array.
@@ -89,7 +89,7 @@ Patient *searchPatientById();
  * If multiple patients have the same name, all matching records are shown.
  * If no match is found, an appropriate message is displayed.
  */
-searchResults *searchPatientByName();
+void searchPatientByName();
 
 /**
  * @brief Prompts the user to discharge a patient by either their ID or Name.

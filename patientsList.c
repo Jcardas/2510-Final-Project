@@ -6,8 +6,6 @@
 #include "main.h"
 
 
-typedef PatientNode *PatientNodePtr;
-
 PatientNodePtr patientsList = NULL;
 
 void add(PatientNodePtr *patientList, Patient patient)
