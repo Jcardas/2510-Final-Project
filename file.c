@@ -7,26 +7,32 @@
 #include <string.h>
 
 #define MAX_LINE_LENGTH 1024
-#define FILE_NAME "patients.txt"
+#define PATIENTS_FILE "patients.txt"
+#define REPORT_FILE "report.txt"
 
 #include "file.h"
 #include "patient.h"
 #include "patientsList.h"
 
-FILE *initializeFile()
+FILE *dataFile = NULL;
+FILE *reportFile = NULL;
+
+void initializeFiles()
 {
-        FILE *dataFile = fopen(FILE_NAME, "r+");
-        if (dataFile == NULL)
-                dataFile = fopen(FILE_NAME, "w+");
-        return dataFile;
+        dataFile = fopen(PATIENTS_FILE, "r+");
+        if (dataFile != NULL)
+                populatePatients();
+        reportFile = fopen(REPORT_FILE, "w");
 }
 
 extern PatientNodePtr patientsList;
+extern PatientNodePtr patientsAdmittedToday;
+extern PatientNodePtr patientsDischargedToday;
 
-void populatePatientsFromFile(FILE *file)
+void populatePatients()
 {
         char line[MAX_LINE_LENGTH];
-        while (fgets(line, sizeof(line), file) !=
+        while (fgets(line, sizeof(line), dataFile) !=
                NULL) { // Read through the file line by line.
                 {
                         char *token = strtok(line, "|");
@@ -58,21 +64,48 @@ void populatePatientsFromFile(FILE *file)
         }
 }
 
-FILE *dataFile = NULL;
-
-void updateFile(FILE *file)
+void savePatient(Patient patient)
 {
-        dataFile = fopen(FILE_NAME, "w"); // Open in write mode to overwrite
+        fprintf(dataFile, "%d|%s|%d|%s|%d\n", patient.patientId, patient.name,
+                patient.age, patient.diagnosis, patient.roomNumber);
+}
+
+void savePatients()
+{
+        dataFile = fopen(PATIENTS_FILE, "w"); // Open in write mode to overwrite
         if (dataFile == NULL) {
                 printf("Error opening file for overwriting\n");
                 return;
         }
-        forEach(patientsList, writePatientToFile);
+        forEach(patientsList, savePatient);
         fclose(dataFile); // Close file
 }
 
-void writePatientToFile(Patient patient)
+void generateReportHeader()
 {
-        fprintf(dataFile, "%d|%s|%d|%s|%d\n", patient.patientId, patient.name,
-                patient.age, patient.diagnosis, patient.roomNumber);
+        fprintf(reportFile, "%-5s\t %-10s\t %-3s\t %-20s\t %-5s\n", "ID",
+                "Full Name", "Age", "Diagnosis", "Room Num");
+}
+
+void reportPatient(Patient p)
+{
+        fprintf(reportFile, "%-5d\t %-10.10s\t %-3d\t %-20.20s\t %-5d\n",
+                p.patientId, p.name, p.age, p.diagnosis, p.roomNumber);
+}
+
+void generateSummaryReport()
+{
+        if (patientsAdmittedToday != NULL) {
+                fprintf(reportFile, "Patients admitted today:\n");
+                generateReportHeader();
+                forEach(patientsAdmittedToday, reportPatient);
+                fprintf(reportFile, "\n");
+        }
+
+        if (patientsDischargedToday != NULL) {
+                fprintf(reportFile, "\n");
+                fprintf(reportFile, "Patients discharged today:\n");
+                generateReportHeader();
+                forEach(patientsDischargedToday, reportPatient);
+        }
 }

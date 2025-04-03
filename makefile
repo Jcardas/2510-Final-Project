@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 LDFLAGS =
 OBJFILES = main.o patient.o doctor.o TUI.o file.o patientsList.o
 TARGET = main

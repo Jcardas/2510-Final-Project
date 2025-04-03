@@ -8,7 +8,9 @@
 #include "TUI.h"
 #include "patientsList.h"
 
-extern PatientNodePtr patientsList;
+PatientNodePtr patientsList = NULL;
+PatientNodePtr patientsAdmittedToday = NULL;
+PatientNodePtr patientsDischargedToday = NULL;
 
 bool checkForPatients()
 {
@@ -70,6 +72,7 @@ void addPatient()
         }
 
         add(&patientsList, newPatient);
+        add(&patientsAdmittedToday, newPatient);
 }
 
 void printPatient(Patient p)
@@ -207,9 +210,9 @@ void dischargePatientById()
                 return;
         }
 
-        printPatient(*p);
         println("Patient discharged successfully.");
         delete (&patientsList, p->patientId);
+        add(&patientsDischargedToday, *p);
 }
 
 void dischargePatientByName()

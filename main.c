@@ -16,18 +16,19 @@ FILE *file;
 
 int main()
 {
-        file = initializeFile();
-        populatePatientsFromFile(file);
+        initializeFiles();
+
         while (1) {
                 clrscr();
                 if (!mainMenu())
-                        return 0;
+                        break;
                 print("\nPress enter to return to menu...");
                 getchar(); // Stops from progressing
         }
-}
 
-PatientNodePtr patientsList = NULL;
+        generateSummaryReport();
+        return 0;
+}
 
 bool mainMenu()
 {
@@ -51,7 +52,7 @@ bool mainMenu()
                         return false;
                 case 1:
                         addPatient();
-                        updateFile(file);
+                        savePatients();
                         return true;
                 case 2:
                         if (checkForPatients())
@@ -64,7 +65,7 @@ bool mainMenu()
                 case 4:
                         if (checkForPatients()) {
                                 dischargePatient();
-                                updateFile(file);
+                                savePatients();
                         }
                         return true;
                 case 5:

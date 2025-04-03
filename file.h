@@ -12,20 +12,23 @@
 * @brief Initializes a file for reading and writing.
 * @return A FILE* of the file to read
 */
-FILE *initializeFile();
+void initializeFiles();
 
 /**
 * @brief Returns a pointer to a patient array after
 * reading the file and parsing the data.
 *
 */
-void populatePatientsFromFile(FILE *file);
+void populatePatients();
 
 /**
 * @brief Updates the file with the current PatientArray.
 */
-void updateFile(FILE *file);
+void savePatients();
 
-void writePatientToFile(Patient patient);
+/**
+ *
+ */
+void generateSummaryReport();
 
 #endif //FILE_H
