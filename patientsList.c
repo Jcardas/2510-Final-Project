@@ -2,17 +2,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "main.h"
-#include "patient.h"
-
-typedef struct PatientNode {
-        Patient data;
-        struct PatientNode *next;
-} PatientNode;
+#include "patientsList.h"
 
 typedef PatientNode *PatientNodePtr;
-
-PatientNodePtr patientsList = NULL;
 
 void add(PatientNode **head, Patient patient)
 {

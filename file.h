@@ -20,12 +20,12 @@ FILE* initializeFile();
 * reading the file and parsing the data.
 *
 */
-void populatePatientNodesFromFile(FILE * file);
+void populatePatientNodesFromFile(PatientNode patients, FILE * file);
 
 /**
 * @brief Updates the file with the current PatientArray.
 */
-void updateFile(FILE * file);
+void updateFile(FILE * file, PatientNode patients);
 
 #endif //FILE_H
 

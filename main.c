@@ -8,9 +8,12 @@
 
 #include "main.h"
 #include "patient.h"
+#include "patientsList.h"
 #include "doctor.h"
 #include "TUI.h"
 #include "file.h"
+
+PatientNodePtr patientsList = NULL;
 
 int main()
 {

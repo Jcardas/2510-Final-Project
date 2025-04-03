@@ -12,7 +12,7 @@
 #include "main.h"
 #include "file.h"
 #include "patient.h"
-#include "patientsList.c" //TODO change to Header file
+#include "patientsList.h"
 
 
 FILE *initializeFile()
@@ -24,8 +24,10 @@ FILE *initializeFile()
         return dataFile;
 }
 
-void populatePatientNodesFromFile(FILE *file)
+void populatePatientNodesFromFile(PatientNodePtr patients, FILE *file)
 {
+        PatientNode *thisPatient = &patients; // Start from the first node
+
         char line[MAX_LINE_LENGTH];
         while (fgets(line, sizeof(line), file) != NULL) { // Read through the file line by line.
                 {
@@ -51,12 +53,12 @@ void populatePatientNodesFromFile(FILE *file)
                       newPatient.age = patientAge;
                       newPatient.roomNumber = patientRoomNum;
 
-                      add(&patientsList , newPatient);
+                      add(thisPatient , newPatient);
                 }
         }
 }
 
-void updateFile(FILE *file)
+void updateFile(FILE *file, PatientNode patients)
 {
         FILE* dataFile = fopen(FILE_NAME, "w"); // Open in write mode to overwrite
         if(dataFile == NULL)
@@ -64,7 +66,7 @@ void updateFile(FILE *file)
                 printf("Error opening file for overwriting\n");
                 return;
         }
-        PatientNode *thisPatient = patientsList; // Start from the first node
+        PatientNode *thisPatient = &patients; // Start from the first node
 
         while (thisPatient != NULL)
                 {
