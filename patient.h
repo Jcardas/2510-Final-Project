@@ -1,36 +1,33 @@
 //
-// Created by justi on 2025-02-17.
+// Created by Justin on 2025-02-17.
 //
 
 #ifndef PATIENT_H
 #define PATIENT_H
 
-#define MAX_PATIENTS 50
+#include "main.h"
 
-#include "hospital.h"
+#define MAX_PATIENTS 100
 
-typedef struct
-{
-    int patientId;
-    char name[CHAR_BUFFER];
-    int age;
-    char diagnosis[CHAR_BUFFER];
-    int roomNumber;
+typedef struct {
+        int patientId;
+        char name[CHAR_BUFFER];
+        int age;
+        char diagnosis[CHAR_BUFFER];
+        int roomNumber;
 } Patient;
 
-typedef struct
-{
-    Patient *matches[MAX_PATIENTS];
-    int size;
+typedef struct {
+        Patient *matches[MAX_PATIENTS];
+        int size;
 } searchResults;
-
 
 /**
  * @brief Gets a patient by id.
  * @param patientId patient's id
  * @return pointer to a Patient, NULL if not found
  */
-Patient* getPatientById(int patientId);
+Patient *getPatientById(int patientId);
 
 /**
  * @brief Adds a new patient record to the system.
@@ -45,7 +42,6 @@ void addPatient();
  */
 void printPatientHeader();
 
-
 /**
  * @brief Prints a patient record.
  *
@@ -53,7 +49,7 @@ void printPatientHeader();
  *
  * @param p pointer to patient
  */
-void printPatient(Patient* p);
+void printPatient(Patient *p);
 
 /**
  * @brief Deletes a patient record at the specified index in the patients array.
@@ -88,7 +84,7 @@ void searchPatient();
  * If a patient with the given ID exists, their details are displayed.
  * Otherwise, a message is printed indicating that no such patient was found.
  */
-Patient* searchPatientById();
+Patient *searchPatientById();
 
 /**
  * @brief Searches for a patient by their name.
@@ -98,8 +94,7 @@ Patient* searchPatientById();
  * If multiple patients have the same name, all matching records are shown.
  * If no match is found, an appropriate message is displayed.
  */
-searchResults* searchPatientByName();
-
+searchResults *searchPatientByName();
 
 /**
  * @brief Prompts the user to discharge a patient by either their ID or Name.

@@ -5,71 +5,10 @@
 #ifndef DOCTOR_H
 #define DOCTOR_H
 
+#include "main.h"
+
 #define DAYS_PER_WEEK 7
 #define SHIFTS_PER_DAY 3
-#define CHAR_BUFFER 50
-
-/**
- * @brief Runs the program's main menu.
- *
- * Prompts player to choose from the main menu
- * and takes corresponding action.
- *
- * @return Whether player wants to keep playing
- */
-bool mainMenu();
-
-/**
- * @brief Convenient alternative for scanf("%d"),
- *
- * Clears the input stream,
- * display an error message if input is invalid,
- * and returns success status
- *
- * @return whether input is valid
- */
-bool scand(int *num);
-
-/**
- * @brief scand, but the number must be positive.
- */
-bool scandPositive(int *num);
-
-/**
- * @brief Convenient wrapper for fgets with error handling
- *
- * Clear the input stream if there is a buffer overflow,
- * and returns the success status.
- *
- * @return Whether there is a buffer overflow
- */
-bool scans(char *str);
-
-/**
- * @brief scans, but the input must be non-empty.
- *
- * @return whether input is non-empty
- */
-bool scansNonEmpty(char *str);
-
-/**
- * Convenient wrapper for printf.
- *
- * Clears the current line and prints.
- */
-void print(const char *format, ...);
-
-/**
- * Convenient wrapper for printf.
- *
- * Clears the current line and prints with an ending <pre>\n</pre>.
- */
-void println(const char *format, ...);
-
-/**
- * @brief Displays an error message that the user input was invalid.
- */
-void invalidInput(char message[]);
 
 /**
  * @brief Initializes the schedule with empty strings.

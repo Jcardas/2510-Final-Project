@@ -5,22 +5,11 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdlib.h>
 
-// Global array of patients
-Patient patients[MAX_PATIENTS];
-int patientCount = 0;
-
-// Doctors schedule as a 2D array
-char doctorsSchedule[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
-char daysOfWeek[][CHAR_BUFFER] = { "Monday",   "Tuesday", "Wednesday",
-                                   "Thursday", "Friday",  "Saturday",
-                                   "Sunday" };
-char shiftsOfDay[][CHAR_BUFFER] = { "Morning", "Afternoon", "Evening" };
-
-// ------------- Main menu -------------
+#include "main.h"
+#include "patient.h"
+#include "doctor.h"
+#include "TUI.h"
 
 int main()
 {

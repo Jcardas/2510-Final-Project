@@ -1,4 +1,13 @@
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "patient.h"
+#include "TUI.h"
+
+Patient patients[MAX_PATIENTS];
+int patientCount = 0;
 
 bool checkForPatients()
 {

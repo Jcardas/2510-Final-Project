@@ -1,6 +1,12 @@
-#define CURSOR_UP "\x1b[A\r"
-#define CLR_LINE "\33[2K\r"
-#define CLR_SCREEN "\033c"
+#include "TUI.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+#include "main.h"
+
 
 bool scans(char *str)
 {

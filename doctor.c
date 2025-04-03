@@ -1,4 +1,14 @@
-#include "hospital.h"
+#include <stdio.h>
+#include <string.h>
+
+#include "doctor.h"
+#include "TUI.h"
+
+char doctorsSchedule[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
+char daysOfWeek[][CHAR_BUFFER] = { "Monday",   "Tuesday", "Wednesday",
+                                   "Thursday", "Friday",  "Saturday",
+                                   "Sunday" };
+char shiftsOfDay[][CHAR_BUFFER] = { "Morning", "Afternoon", "Evening" };
 
 void manageDoctorSchedule()
 {
