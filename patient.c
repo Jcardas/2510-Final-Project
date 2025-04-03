@@ -8,7 +8,6 @@
 #include "TUI.h"
 #include "patientsList.h"
 
-
 extern PatientNodePtr patientsList;
 
 bool checkForPatients()
@@ -208,6 +207,7 @@ void dischargePatientById()
                 return;
         }
 
+        printPatient(*p);
         println("Patient discharged successfully.");
         delete (&patientsList, p->patientId);
 }
