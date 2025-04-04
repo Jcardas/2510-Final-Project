@@ -70,10 +70,13 @@ void addPatient()
         while (1) {
                 print("Room number: ");
                 if (scandPositive(&newPatient.roomNumber)) {
-                        if (!roomsOccupied[newPatient.roomNumber - 1]) {
+                        if (newPatient.roomNumber < 1 ||
+                            newPatient.roomNumber > ROOMS_COUNT)
+                                invalidInput("Invalid room number.");
+                        else if (roomsOccupied[newPatient.roomNumber - 1])
+                                invalidInput("Room occupied");
+                        else
                                 break;
-                        }
-                        invalidInput("Room occupied");
                 }
         }
 
