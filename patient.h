@@ -7,7 +7,7 @@
 
 #include "main.h"
 
-#define MAX_PATIENTS 100
+#define ROOMS_COUNT 100
 
 typedef struct {
         int patientId;

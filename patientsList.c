@@ -6,10 +6,14 @@
 
 typedef PatientNode *PatientNodePtr;
 
+extern bool roomsOccupied[];
+
 void add(PatientNodePtr *patientList, Patient patient)
 {
+        roomsOccupied[patient.roomNumber - 1] = true;
+
         // Allocate memory for the new node
-        PatientNodePtr newNodePtr = (PatientNodePtr)malloc(sizeof(PatientNode));
+        PatientNodePtr newNodePtr = malloc(sizeof(PatientNode));
 
         // Assign data to the new node and set 'next' to NULL
         newNodePtr->data = patient;

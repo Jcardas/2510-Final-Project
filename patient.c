@@ -12,6 +12,8 @@ PatientNodePtr patientsList = NULL;
 PatientNodePtr patientsAdmittedToday = NULL;
 PatientNodePtr patientsDischargedToday = NULL;
 
+bool roomsOccupied[ROOMS_COUNT];
+
 bool checkForPatients()
 {
         if (patientsList == NULL) {
@@ -67,8 +69,12 @@ void addPatient()
 
         while (1) {
                 print("Room number: ");
-                if (scandPositive(&newPatient.roomNumber))
-                        break;
+                if (scandPositive(&newPatient.roomNumber)) {
+                        if (!roomsOccupied[newPatient.roomNumber - 1]) {
+                                break;
+                        }
+                        invalidInput("Room occupied");
+                }
         }
 
         add(&patientsList, newPatient);

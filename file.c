@@ -29,6 +29,8 @@ extern PatientNodePtr patientsList;
 extern PatientNodePtr patientsAdmittedToday;
 extern PatientNodePtr patientsDischargedToday;
 
+extern bool roomsOccupied[];
+
 void populatePatients()
 {
         char line[MAX_LINE_LENGTH];
@@ -103,9 +105,16 @@ void generateSummaryReport()
         }
 
         if (patientsDischargedToday != NULL) {
-                fprintf(reportFile, "\n");
                 fprintf(reportFile, "Patients discharged today:\n");
                 generateReportHeader();
                 forEach(patientsDischargedToday, reportPatient);
         }
+
+        int count = 0;
+        for (int i = 0; i < ROOMS_COUNT; ++i) {
+                if (roomsOccupied[i]) {
+                        ++count;
+                }
+        }
+        fprintf(reportFile, "Rooms occupied: %d/%d", count, ROOMS_COUNT);
 }
