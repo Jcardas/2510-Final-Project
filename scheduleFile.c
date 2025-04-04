@@ -15,9 +15,9 @@
 FILE* initializeScheduleFile()
 {
         FILE* scheduleFile = fopen(FILE_NAME, "r+");
-        if(scheduleFile == NULL)
-        {
-                printf("Error initializing file\n");
+        if (scheduleFile == NULL) {
+                perror("Error initializing file");
+                return NULL;
         }
         return scheduleFile;
 }
@@ -26,6 +26,11 @@ extern char doctorsSchedule[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
 
 void populateScheduleArrayFromFile(FILE* dataFile)
 {
+        if (dataFile == NULL) {
+                fprintf(stderr, "Error: data file is NULL\n");
+                return;
+        }
+
         char line[CHAR_BUFFER];
         int day = 0;
         int shift = 0;
@@ -58,17 +63,22 @@ void populateScheduleArrayFromFile(FILE* dataFile)
 void updateScheduleFile(FILE* scheduleFile)
 {
         scheduleFile = fopen(FILE_NAME, "w"); // Open in write mode to overwrite
-        if(scheduleFile == NULL)
-        {
-                printf("Error opening file for writing\n");
+        if (scheduleFile == NULL) {
+                perror("Error opening file for writing");
                 return;
         }
 
         for (int i = 0; i < DAYS_PER_WEEK; ++i) {
                 for (int j = 0; j < SHIFTS_PER_DAY; ++j) {
-                        // Write doctor name or empty line if slot is unassigned
-                        fprintf(scheduleFile, "%s\n", doctorsSchedule[i][j]);
+                        if (fprintf(scheduleFile, "%s\n", doctorsSchedule[i][j]) < 0) {
+                                perror("Error writing to file");
+                                fclose(scheduleFile);
+                                return;
+                        }
                 }
         }
-        fclose(scheduleFile);
+
+        if (fclose(scheduleFile) != 0) {
+                perror("Error closing file");
+        }
 }

@@ -20,9 +20,19 @@ FILE *reportFile = NULL;
 void initializeFiles()
 {
         dataFile = fopen(PATIENTS_FILE, "r+");
-        if (dataFile != NULL)
-                populatePatients();
+        if (dataFile == NULL) {
+                perror("Error opening patients file");
+                return;
+        }
+
+        populatePatients();
+
         reportFile = fopen(REPORT_FILE, "w");
+        if (reportFile == NULL) {
+                perror("Error opening report file");
+                fclose(dataFile); // Close data file before returning
+                return;
+        }
 }
 
 extern PatientNodePtr patientsList;
@@ -68,8 +78,10 @@ void populatePatients()
 
 void savePatient(Patient patient)
 {
-        fprintf(dataFile, "%d|%s|%d|%s|%d\n", patient.patientId, patient.name,
-                patient.age, patient.diagnosis, patient.roomNumber);
+        if (fprintf(dataFile, "%d|%s|%d|%s|%d\n", patient.patientId, patient.name,
+                patient.age, patient.diagnosis, patient.roomNumber) < 0) {
+            perror("Error writing to patients file");
+        }
 }
 
 void savePatients()
@@ -80,19 +92,25 @@ void savePatients()
                 return;
         }
         forEach(patientsList, savePatient);
-        fclose(dataFile); // Close file
+        if (fclose(dataFile) != 0) {
+            perror("Error closing patients file after saving");
+        }
 }
 
 void generateReportHeader()
 {
-        fprintf(reportFile, "%-5s\t %-10s\t %-3s\t %-20s\t %-5s\n", "ID",
-                "Full Name", "Age", "Diagnosis", "Room Num");
+        if (fprintf(reportFile, "%-5s\t %-10s\t %-3s\t %-20s\t %-5s\n", "ID",
+                "Full Name", "Age", "Diagnosis", "Room Num") < 0) {
+            perror("Error writing report header");
+        }
 }
 
 void reportPatient(Patient p)
 {
-        fprintf(reportFile, "%-5d\t %-10.10s\t %-3d\t %-20.20s\t %-5d\n",
-                p.patientId, p.name, p.age, p.diagnosis, p.roomNumber);
+        if (fprintf(reportFile, "%-5d\t %-10.10s\t %-3d\t %-20.20s\t %-5d\n",
+                p.patientId, p.name, p.age, p.diagnosis, p.roomNumber) < 0) {
+            perror("Error writing patient report");
+        }
 }
 
 void generateSummaryReport()
@@ -116,5 +134,7 @@ void generateSummaryReport()
                         ++count;
                 }
         }
-        fprintf(reportFile, "Rooms occupied: %d/%d", count, ROOMS_COUNT);
+        if (fprintf(reportFile, "Rooms occupied: %d/%d", count, ROOMS_COUNT) < 0) {
+            perror("Error writing room occupancy report");
+        }
 }
