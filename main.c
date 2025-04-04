@@ -12,7 +12,7 @@
 #include "TUI.h"
 #include "file.h"
 
-FILE *file;
+FILE *patientFile;
 
 int main()
 {

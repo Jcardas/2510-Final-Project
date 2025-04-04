@@ -4,6 +4,36 @@
 #include "main.h"
 #include "doctor.h"
 #include "TUI.h"
+#include "file.h"
+
+#include "scheduleFile.h"
+
+/**
+ * @brief Initializes the schedule file.
+ *
+ * Opens or creates the schedule file for storing doctor schedules.
+ *
+ * @return FILE* Pointer to the opened schedule file.
+ */
+FILE* initializeScheduleFile();
+
+/**
+ * @brief Populates the schedule array from the file.
+ *
+ * Reads the schedule data from the file and loads it into the doctorsSchedule array.
+ *
+ * @param dataFile Pointer to the schedule file.
+ */
+void populateScheduleArrayFromFile(FILE* dataFile);
+
+/**
+ * @brief Updates the schedule file.
+ *
+ * Writes the current schedule data back to the file.
+ *
+ * @param scheduleFile Pointer to the schedule file.
+ */
+void updateScheduleFile(FILE* scheduleFile);
 
 char doctorsSchedule[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
 char daysOfWeek[][CHAR_BUFFER] = { "Monday",   "Tuesday", "Wednesday",
@@ -11,8 +41,15 @@ char daysOfWeek[][CHAR_BUFFER] = { "Monday",   "Tuesday", "Wednesday",
                                    "Sunday" };
 char shiftsOfDay[][CHAR_BUFFER] = { "Morning", "Afternoon", "Evening" };
 
+FILE* scheduleFile;
+
 void manageDoctorSchedule()
 {
+        if(scheduleFile == NULL) {
+                scheduleFile = initializeScheduleFile();
+                initializeDoctorsSchedule(scheduleFile);
+        }
+
         printf(CLR_SCREEN);
         println("Manage doctors schedule:");
         println("0. Nevermind; exit.");
@@ -29,9 +66,15 @@ void manageDoctorSchedule()
                         return;
                 case 1:
                         printDoctorsSchedule(doctorsSchedule);
+
+                        // Update file
+                        updateScheduleFile(scheduleFile);
                         return;
                 case 2:
                         changeDoctorSchedule();
+
+                        // Update file
+                        updateScheduleFile(scheduleFile);
                         return;
                 default:
                         invalidInput("Invalid choice.");
@@ -39,12 +82,12 @@ void manageDoctorSchedule()
         }
 }
 
-void initializeDoctorsSchedule()
+void initializeDoctorsSchedule(FILE* dataFile)
 {
-        for (int i = 0; i < DAYS_PER_WEEK; ++i) {
-                for (int j = 0; j < SHIFTS_PER_DAY; ++j) {
-                        sprintf(doctorsSchedule[i][j], "%s", "");
-                }
+       dataFile = initializeScheduleFile();
+        if (dataFile != NULL) {
+                populateScheduleArrayFromFile(dataFile);
+                fclose(dataFile);
         }
 }
 
@@ -128,6 +171,7 @@ void changeDoctorSchedule()
         scans(newDoctor);
         // Assign doctor (or lack thereof) to the shift
         sprintf(doctorsSchedule[day][shift], "%s", newDoctor);
+
         // Print confirmation
         println("\nSchedule updated successfully.");
         printDoctorsSchedule(doctorsSchedule);

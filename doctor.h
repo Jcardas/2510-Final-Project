@@ -13,7 +13,7 @@
 /**
  * @brief Initializes the schedule with empty strings.
  */
-void initializeDoctorsSchedule();
+void initializeDoctorsSchedule(FILE* dataFile);
 
 /**
  * @brief Prints the doctors schedule, with filled values
