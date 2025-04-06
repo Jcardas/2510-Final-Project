@@ -91,9 +91,6 @@ void savePatients()
                 return;
         }
         forEach(patientsList, savePatient);
-        if (fclose(dataFile) != 0) {
-            perror("Error closing patients file after saving");
-        }
 }
 
 void generateReportHeader()
@@ -137,5 +134,6 @@ void generateSummaryReport()
             perror("Error writing room occupancy report");
         }
 
+        fclose(dataFile);
         fclose(reportFile);
 }
