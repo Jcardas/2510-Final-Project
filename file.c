@@ -19,10 +19,10 @@ FILE *reportFile = NULL;
 
 void initializeFiles()
 {
-        dataFile = fopen(PATIENTS_FILE, "r+");
+        dataFile = fopen(PATIENTS_FILE, "w+");
         if (dataFile == NULL) {
                 perror("Error opening patients file");
-                return;
+                exit(EXIT_FAILURE);
         }
 
         populatePatients();
@@ -31,7 +31,7 @@ void initializeFiles()
         if (reportFile == NULL) {
                 perror("Error opening report file");
                 fclose(dataFile); // Close data file before returning
-                return;
+                exit(EXIT_FAILURE);
         }
 }
 
@@ -86,7 +86,6 @@ void savePatient(Patient patient)
 
 void savePatients()
 {
-        dataFile = fopen(PATIENTS_FILE, "w"); // Open in write mode to overwrite
         if (dataFile == NULL) {
                 printf("Error opening file for overwriting\n");
                 return;
@@ -137,4 +136,6 @@ void generateSummaryReport()
         if (fprintf(reportFile, "Rooms occupied: %d/%d", count, ROOMS_COUNT) < 0) {
             perror("Error writing room occupancy report");
         }
+
+        fclose(reportFile);
 }

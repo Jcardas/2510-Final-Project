@@ -5,35 +5,8 @@
 #include "doctor.h"
 #include "TUI.h"
 #include "file.h"
-
 #include "scheduleFile.h"
 
-/**
- * @brief Initializes the schedule file.
- *
- * Opens or creates the schedule file for storing doctor schedules.
- *
- * @return FILE* Pointer to the opened schedule file.
- */
-FILE* initializeScheduleFile();
-
-/**
- * @brief Populates the schedule array from the file.
- *
- * Reads the schedule data from the file and loads it into the doctorsSchedule array.
- *
- * @param dataFile Pointer to the schedule file.
- */
-void populateScheduleArrayFromFile(FILE* dataFile);
-
-/**
- * @brief Updates the schedule file.
- *
- * Writes the current schedule data back to the file.
- *
- * @param scheduleFile Pointer to the schedule file.
- */
-void updateScheduleFile(FILE* scheduleFile);
 
 char doctorsSchedule[DAYS_PER_WEEK][SHIFTS_PER_DAY][CHAR_BUFFER];
 char daysOfWeek[][CHAR_BUFFER] = { "Monday",   "Tuesday", "Wednesday",

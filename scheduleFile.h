@@ -6,7 +6,6 @@
 #define SCHEDULEFILE_H
 
 #include <stdio.h>
-#include "doctor.h"
 
 /**
  * @brief Initializes the schedule file.

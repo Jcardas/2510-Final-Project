@@ -4,8 +4,6 @@
 #include "patientsList.h"
 #include "patient.h"
 
-typedef PatientNode *PatientNodePtr;
-
 extern bool roomsOccupied[];
 
 void add(PatientNodePtr *patientList, Patient patient)
@@ -64,6 +62,15 @@ void delete(PatientNodePtr *patientList, const int patientId)
         free(temp);
 }
 
+void forEach(PatientNodePtr patientList, void (*then)(Patient))
+{
+        PatientNodePtr head = patientList;
+        while (head != NULL) {
+                (*then)(head->data);
+                head = head->next;
+        }
+}
+
 // Search for patient in a list
 PatientNodePtr search(PatientNodePtr patientList, const int patientId)
 {
@@ -74,14 +81,4 @@ PatientNodePtr search(PatientNodePtr patientList, const int patientId)
                 current = current->next;
         }
         return NULL;
-}
-
-// Function to print the linked list
-void forEach(PatientNodePtr patientList, void (*then)(Patient))
-{
-        PatientNodePtr head = patientList;
-        while (head != NULL) {
-                (*then)(head->data);
-                head = head->next;
-        }
 }

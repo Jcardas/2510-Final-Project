@@ -10,5 +10,5 @@ $(TARGET): $(OBJFILES)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES)
 
 clean:
-	rm -f $(OBJFILES) $(TARGET) *~
-	# Change the target name
+	rm -f $(OBJFILES) *~
+	rm *.txt
