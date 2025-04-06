@@ -30,7 +30,6 @@ void initializeFiles()
         reportFile = fopen(REPORT_FILE, "w");
         if (reportFile == NULL) {
                 perror("Error opening report file");
-                fclose(dataFile); // Close data file before returning
                 exit(EXIT_FAILURE);
         }
 }
@@ -130,10 +129,7 @@ void generateSummaryReport()
                         ++count;
                 }
         }
-        if (fprintf(reportFile, "Rooms occupied: %d/%d", count, ROOMS_COUNT) < 0) {
+        if (fprintf(reportFile, "\nRooms occupied: %d/%d", count, ROOMS_COUNT) < 0) {
             perror("Error writing room occupancy report");
         }
-
-        fclose(dataFile);
-        fclose(reportFile);
 }

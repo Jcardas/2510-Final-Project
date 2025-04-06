@@ -8,7 +8,7 @@
 #include "main.h"
 
 
-bool scans(char *str)
+bool scans(char *str) // like scanf("%s"), but better
 {
         fgets(str, CHAR_BUFFER, stdin);
 
@@ -22,8 +22,8 @@ bool scans(char *str)
         // If not found, it means user entered more characters than allowed
         // Clear the input stream
         int c;
-        while ((c = getchar()) != '\n' && c != EOF)
-                ;
+        while ((c = getchar()) != '\n' && c != EOF);
+
         // Print error message
         char errorMessage[CHAR_BUFFER];
         sprintf(errorMessage, "Maximum %d characters allowed.", CHAR_BUFFER);
@@ -31,7 +31,7 @@ bool scans(char *str)
         return false;
 }
 
-bool scansNonEmpty(char *str)
+bool scansNonEmpty(char *str) // like scans, but requires non-empty input
 {
         if (!scans(str))
                 return false;
@@ -41,7 +41,7 @@ bool scansNonEmpty(char *str)
         return false;
 }
 
-bool scand(int *num)
+bool scand(int *num) // like scanf("%d"), but better
 {
         // Use scans and convert it to int instead of scanf("%d),
         // because the former can handle empty input.
@@ -58,7 +58,7 @@ bool scand(int *num)
         return false;
 }
 
-bool scandPositive(int *num)
+bool scandPositive(int *num) // like scand, but requires non-negative input
 {
         if (!scand(num))
                 return false;

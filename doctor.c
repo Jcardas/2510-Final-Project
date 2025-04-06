@@ -60,7 +60,6 @@ void initializeDoctorsSchedule(FILE* dataFile)
        dataFile = initializeScheduleFile();
         if (dataFile != NULL) {
                 populateScheduleArrayFromFile(dataFile);
-                fclose(dataFile);
         }
 }
 

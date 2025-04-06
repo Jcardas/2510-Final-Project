@@ -71,7 +71,6 @@ void forEach(PatientNodePtr patientList, void (*then)(Patient))
         }
 }
 
-// Search for patient in a list
 PatientNodePtr search(PatientNodePtr patientList, const int patientId)
 {
         PatientNodePtr current = patientList; // Initialize current

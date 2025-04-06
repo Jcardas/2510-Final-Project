@@ -220,8 +220,8 @@ void dischargePatientById()
         }
 
         println("Patient discharged successfully.");
-        delete (&patientsList, p->patientId);
         add(&patientsDischargedToday, *p);
+        delete (&patientsList, p->patientId);
 }
 
 void dischargePatientByName()

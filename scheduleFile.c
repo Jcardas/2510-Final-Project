@@ -2,7 +2,7 @@
 // Created by Justin Cardas on 2025-04-03.
 //
 
-#define FILE_NAME "scheduleFile.txt"
+#define SCHEDULE_FILE "scheduleFile.txt"
 #define DAYS 21
 
 #include <stdio.h>
@@ -14,10 +14,10 @@
 
 FILE* initializeScheduleFile()
 {
-        FILE* scheduleFile = fopen(FILE_NAME, "r+");
+        FILE* scheduleFile = fopen(SCHEDULE_FILE, "w+");
         if (scheduleFile == NULL) {
-                perror("Error initializing file");
-                return NULL;
+                perror("Error opening schedule file");
+                exit(EXIT_FAILURE);
         }
         return scheduleFile;
 }
@@ -62,23 +62,12 @@ void populateScheduleArrayFromFile(FILE* dataFile)
 
 void updateScheduleFile(FILE* scheduleFile)
 {
-        scheduleFile = fopen(FILE_NAME, "w"); // Open in write mode to overwrite
-        if (scheduleFile == NULL) {
-                perror("Error opening file for writing");
-                return;
-        }
-
         for (int i = 0; i < DAYS_PER_WEEK; ++i) {
                 for (int j = 0; j < SHIFTS_PER_DAY; ++j) {
                         if (fprintf(scheduleFile, "%s\n", doctorsSchedule[i][j]) < 0) {
                                 perror("Error writing to file");
-                                fclose(scheduleFile);
                                 return;
                         }
                 }
-        }
-
-        if (fclose(scheduleFile) != 0) {
-                perror("Error closing file");
         }
 }
